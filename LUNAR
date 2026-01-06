@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PIO 🌙 Lunar Dashboard</title>
+
+  <!-- TradingView Widget -->
+  <script src="https://s3.tradingview.com/tv.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #0b0b1a, #000);
+      color: #e6e6ff;
+      text-align: center;
+    }
+
+    header {
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .contract {
+      font-size: 12px;
+      opacity: 0.8;
+      word-break: break-all;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .buttons {
+      margin: 20px 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #6f5cff, #c77dff);
+      border: none;
+      color: #fff;
+      padding: 14px 22px;
+      margin: 10px;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(180,120,255,0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(220,160,255,0.9);
+    }
+
+    #moonOutput {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
+    footer {
+      opacity: 0.5;
+      font-size: 12px;
+      margin: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>PIO 🌙 Lunar Treat Dashboard</h1>
+  <div class="contract">
+    $TSUKI Contract (Solana):<br>
+    463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Chart -->
+  <div id="tv_chart" style="height: 420px;"></div>
+
+  <!-- Buttons -->
+  <div class="buttons">
+    <button onclick="rewardPIO()">🌙 Reward PIO</button>
+    <button onclick="watchGrow()">📈 Watch PIO Grow</button>
+  </div>
+
+  <div id="moonOutput"></div>
+
+</div>
+
+<footer>
+  Lunar systems online • Trust-based • Moon-synced
+</footer>
+
+<script>
+  // TradingView Chart
+  new TradingView.widget({
+    container_id: "tv_chart",
+    width: "100%",
+    height: 420,
+    symbol: "SOLUSDT", // placeholder pair
+    interval: "60",
+    timezone: "Etc/UTC",
+    theme: "dark",
+    style: "3",
+    locale: "en",
+    toolbar_bg: "#0b0b1a",
+    enable_publishing: false,
+    hide_side_toolbar: false,
+    allow_symbol_change: true
+  });
+
+  // Lunar Treat Logic
+  function rewardPIO() {
+    const moons = Math.floor(Math.random() * 3) + 1;
+    document.getElementById("moonOutput").innerHTML =
+      `PIO received <strong>${moons} 🌙 Lunar Treat(s)</strong><br>
+       Energy aligned. Trust confirmed.`;
+    console.log("🌙 Rewarded PIO with", moons, "Lunar Treats");
+  }
+
+  function watchGrow() {
+    document.getElementById("moonOutput").innerHTML =
+      "📈 Watching PIO grow... Lunar alignment in progress.";
+    console.log("📈 Watching PIO grow");
+  }
+</script>
+
+</body>
+</html>
