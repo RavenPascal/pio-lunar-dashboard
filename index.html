@@ -61,6 +61,7 @@
     #moonOutput {
       margin-top: 15px;
       font-size: 18px;
+      min-height: 40px;
     }
 
     footer {
@@ -92,7 +93,7 @@
     <button onclick="watchGrow()">📈 Watch PIO Grow</button>
   </div>
 
-  <div id="moonOutput"></div>
+  <div id="moonOutput">🌙 Awaiting lunar action...</div>
 
 </div>
 
@@ -101,7 +102,9 @@
 </footer>
 
 <script>
+  // ===============================
   // TradingView Chart
+  // ===============================
   new TradingView.widget({
     container_id: "tv_chart",
     width: "100%",
@@ -118,31 +121,45 @@
     allow_symbol_change: true
   });
 
-  // --- CONNECT FRONTEND TO PYTHONANYWHERE BACKEND ---
-  const BACKEND_URL = "https://ampedmyc.pythonanywhere.com";  // YOUR backend
+  // ===============================
+  // Backend Connection
+  // ===============================
+  const BACKEND_URL = "https://ampedmyc.pythonanywhere.com";
 
   async function rewardPIO() {
+    document.getElementById("moonOutput").innerHTML =
+      "🌕 Sending lunar signal...";
+
     try {
-      const res = await fetch(`${BACKEND_URL}/reward`, { method: "POST" });
+      const res = await fetch(`${BACKEND_URL}/reward`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) throw new Error("Backend error");
+
       const data = await res.json();
 
       let output = `PIO received <strong>${data.treats.length} 🌙 Lunar Treat(s)</strong><br>`;
-      data.treats.forEach(t => {
-        output += `🌙 Energy: ${t.energy}<br>`;
+      data.treats.forEach((t, i) => {
+        output += `🌙 Treat ${i + 1}: Energy ${t.energy}<br>`;
       });
 
       document.getElementById("moonOutput").innerHTML = output;
       console.log("🌙 Rewarded PIO:", data.treats);
+
     } catch (err) {
       document.getElementById("moonOutput").innerHTML =
-        "⚠️ Could not reach Lunar Treat Engine. Try again later.";
+        "⚠️ Lunar Treat Engine offline. Try again later.";
       console.error(err);
     }
   }
 
   function watchGrow() {
     document.getElementById("moonOutput").innerHTML =
-      "📈 Watching PIO grow... Lunar alignment in progress.";
+      "📈 Watching PIO grow... Moon phase syncing.";
     console.log("📈 Watching PIO grow");
   }
 </script>
