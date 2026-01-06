@@ -1,45 +1,81 @@
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #0b0b1a, #000);
-    color: #e6e6ff;
-    text-align: center;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PIO 🌙 Lunar Dashboard</title>
 
-  header {
-    padding: 20px;
-  }
+  <!-- TradingView Widget -->
+  <script src="https://s3.tradingview.com/tv.js"></script>
 
-  h1 {
-    margin-bottom: 5px;
-  }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #0b0b1a, #000);
+      color: #e6e6ff;
+      text-align: center;
+    }
 
-  .contract {
-    font-size: 12px;
-    opacity: 0.8;
-    word-break: break-all;
-  }
+    header {
+      padding: 20px;
+    }
 
-  .container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-  }
+    h1 {
+      margin-bottom: 5px;
+    }
 
-  .buttons {
-    margin: 20px 0;
-  }
+    .contract {
+      font-size: 12px;
+      opacity: 0.8;
+      word-break: break-all;
+    }
 
-  button {
-    background: linear-gradient(135deg, #6f5cff, #c77dff);
-    border: none;
-    color: #fff;
-    padding: 14px 22px;
-    margin: 10px;
-    border-radius: 30px;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(199,125,255,0.6);
-  }
-</style>
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .buttons {
+      margin: 20px 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #6f5cff, #c77dff);
+      border: none;
+      color: #fff;
+      padding: 14px 22px;
+      margin: 10px;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(199,125,255,0.6);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(220,160,255,0.9);
+    }
+
+    #moonOutput {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
+    #pioEmotion {
+      font-size: 60px;
+      margin: 20px;
+    }
+
+    footer {
+      opacity: 0.5;
+      font-size: 12px;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Your HTML content goes here -->
+</body>
+</html>
