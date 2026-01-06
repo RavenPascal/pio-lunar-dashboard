@@ -1,52 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>PIO 🌙 Lunar Dashboard</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at top, #0b0b1a, #000);
+    color: #e6e6ff;
+    text-align: center;
+  }
 
-  <!-- TradingView Widget -->
-  <script src="https://s3.tradingview.com/tv.js"></script>
+  header {
+    padding: 20px;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #0b0b1a, #000);
-      color: #e6e6ff;
-      text-align: center;
-    }
+  h1 {
+    margin-bottom: 5px;
+  }
 
-    header {
-      padding: 20px;
-    }
+  .contract {
+    font-size: 12px;
+    opacity: 0.8;
+    word-break: break-all;
+  }
 
-    h1 {
-      margin-bottom: 5px;
-    }
+  .container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+  }
 
-    .contract {
-      font-size: 12px;
-      opacity: 0.8;
-      word-break: break-all;
-    }
+  .buttons {
+    margin: 20px 0;
+  }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .buttons {
-      margin: 20px 0;
-    }
-
-    button {
-      background: linear-gradient(135deg, #6f5cff, #c77dff);
-      border: none;
-      color: #fff;
-      padding: 14px 22px;
-      margin: 10px;
-      border-radius: 30px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow:
+  button {
+    background: linear-gradient(135deg, #6f5cff, #c77dff);
+    border: none;
+    color: #fff;
+    padding: 14px 22px;
+    margin: 10px;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(199,125,255,0.6);
+  }
+</style>
