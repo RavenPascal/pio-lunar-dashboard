@@ -129,7 +129,7 @@
 
   <!-- PIO TAMAGOTCHI -->
   <div id="pio-zone">
-    <img id="pio-face" src="pio-neutral.svg" alt="PIO Mood" />
+    <img id="pio-face" src="pio-images/pio-neutral.png" alt="PIO Mood" />
     <div id="pio-mood">PIO is calm 🌙</div>
   </div>
 
@@ -218,24 +218,24 @@
     face.className = "";
 
     if (change < -2) {
-      face.src = "pio-sad.svg";
+      face.src = "pio-images/pio-sad.png";
       mood.innerText = "PIO feels sad 😿";
     } else if (change < -0.5) {
-      face.src = "pio-worried.svg";
+      face.src = "pio-images/pio-worried.png";
       mood.innerText = "PIO is worried 😟";
     } else if (change < 0.5) {
-      face.src = "pio-neutral.svg";
+      face.src = "pio-images/pio-neutral.png";
       mood.innerText = "PIO is calm 🌙";
     } else if (change < 3) {
-      face.src = "pio-happy.svg";
+      face.src = "pio-images/pio-happy.png";
       face.classList.add("pio-happy");
       mood.innerText = "PIO is happy 😺";
     } else if (change < 7) {
-      face.src = "pio-laugh.svg";
+      face.src = "pio-images/pio-laugh.png";
       face.classList.add("pio-laugh");
       mood.innerText = "PIO is laughing 😹";
     } else {
-      face.src = "pio-sing.svg";
+      face.src = "pio-images/pio-sing.png";
       face.classList.add("pio-sing");
       mood.innerText = "PIO ENTERED AP MODE 🎤🔥";
     }
