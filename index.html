@@ -15,7 +15,11 @@
     header { padding: 20px; text-align: center; }
     h1 { margin-bottom: 5px; }
 
-    .contract { font-size: 12px; opacity: 0.8; word-break: break-all; }
+    .contract {
+      font-size: 12px;
+      opacity: 0.8;
+      word-break: break-all;
+    }
 
     .container {
       max-width: 1200px;
@@ -35,7 +39,12 @@
     .pio-sing  { animation: pioBounce 0.6s infinite; }
     @keyframes pioBounce { 0%{transform:translateY(0);}50%{transform:translateY(-12px);}100%{transform:translateY(0);} }
 
-    #tv_chart { height: 300px; width: 100%; border-radius: 14px; overflow: hidden; }
+    #tv_chart iframe {
+      width: 100%;
+      height: 300px;
+      border-radius: 14px;
+      border: none;
+    }
 
     .panel { background: linear-gradient(180deg, rgba(30,20,60,0.7), rgba(10,5,20,0.9)); padding: 20px; border-radius: 18px; box-shadow: 0 0 30px rgba(160,120,255,0.25); }
     .health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
@@ -78,10 +87,8 @@
       <div id="pio-mood">PIO is calm 🌙</div>
     </div>
 
-    <!-- Solana Tracker Chart Embed -->
     <div id="tv_chart">
-      <iframe src="https://solanatracker.io/token/463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA?embed=1&interval=5m&range=1d" 
-              width="100%" height="300" frameborder="0" scrolling="no" style="border-radius:14px;"></iframe>
+      <iframe src="https://dexscreener.com/solana/7ymhxapzcefuo24kngp77mgj1crdav8ayyfqgvb5skzf?embed=1"></iframe>
     </div>
 
     <div class="panel" id="pio-health">
@@ -141,23 +148,19 @@
   function updateAge() {
     const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
     const months = Math.floor(days / 30.44);
-    document.getElementById("pioAge").innerText =
-      `${months} months (${days} days)`;
+    document.getElementById("pioAge").innerText = `${months} months (${days} days)`;
   }
 
   async function rewardPIO() {
     const output = document.getElementById("moonOutput");
     output.innerHTML = "🌕 Sending lunar signal...";
-
     try {
       const res = await fetch("https://ampedmyc.pythonanywhere.com/reward", { method: "POST" });
       if (!res.ok) throw new Error("HTTP " + res.status);
-
       const data = await res.json();
       let html = `PIO received <strong>${data.treats.length} 🌙 Lunar Treat(s)</strong><br>`;
       data.treats.forEach((t,i)=>{ html += `🌙 Treat ${i+1}: Energy ${t.energy}<br>`; });
       output.innerHTML = html;
-
     } catch(err){
       console.error(err);
       output.innerHTML = "⚠️ Lunar Treat Engine unreachable.";
@@ -169,7 +172,6 @@
     const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
     const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
     const currentSign = signs[Math.floor(Math.random()*signs.length)];
-
     document.getElementById("lunarMatrix").innerText = matrix;
     document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
     document.getElementById("lunarSigns").innerText = currentSign;
