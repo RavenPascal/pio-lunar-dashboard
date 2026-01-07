@@ -13,10 +13,9 @@
       font-family: Arial, sans-serif;
       background: radial-gradient(circle at top, #0b0b1a, #000);
       color: #e6e6ff;
-      text-align: center;
     }
 
-    header { padding: 20px; }
+    header { padding: 20px; text-align: center; }
     h1 { margin-bottom: 5px; }
 
     .contract {
@@ -26,15 +25,18 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1200px;
       margin: auto;
       padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
     }
 
     /* ===============================
        PIO TAMAGOTCHI
     =============================== */
-    #pio-zone { margin: 30px auto 10px; }
+    #pio-zone { margin: 20px auto; text-align: center; }
 
     #pio-face {
       width: 180px;
@@ -61,7 +63,7 @@
        CHART
     =============================== */
     #tv_chart {
-      height: 420px;
+      height: 300px;
       opacity: 0.25;
       filter: blur(1px);
       transition: opacity 0.3s, filter 0.3s;
@@ -75,35 +77,34 @@
     /* ===============================
        PIO HEALTH PANEL
     =============================== */
-    #pio-health {
-      margin: 25px auto;
-      padding: 20px;
+    .panel {
       background: linear-gradient(180deg, rgba(30,20,60,0.7), rgba(10,5,20,0.9));
+      padding: 20px;
       border-radius: 18px;
       box-shadow: 0 0 30px rgba(160,120,255,0.25);
-      text-align: left;
     }
 
     .health-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 15px;
     }
 
-    .health-card {
+    .health-card, .lunar-card {
       background: rgba(255,255,255,0.05);
       border-radius: 14px;
       padding: 15px;
+      text-align: center;
     }
 
-    .health-title {
+    .health-title, .lunar-title {
       font-size: 13px;
       opacity: 0.7;
       margin-bottom: 6px;
     }
 
-    .health-value {
-      font-size: 20px;
+    .health-value, .lunar-value {
+      font-size: 18px;
       font-weight: bold;
     }
 
@@ -111,7 +112,7 @@
     .health-mid  { color: #ffd479; }
     .health-bad  { color: #ff8c8c; }
 
-    .buttons { margin: 20px 0; }
+    .buttons { margin: 20px 0; text-align: center; }
 
     button {
       background: linear-gradient(135deg, #6f5cff, #c77dff);
@@ -134,12 +135,30 @@
       margin-top: 15px;
       font-size: 18px;
       min-height: 40px;
+      text-align: center;
+    }
+
+    /* ===============================
+       Lunar Consultation
+    =============================== */
+    #lunar-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+      background: rgba(255,255,255,0.02);
+      border-radius: 50%;
     }
 
     footer {
       opacity: 0.5;
       font-size: 12px;
       margin: 20px;
+      text-align: center;
     }
   </style>
 </head>
@@ -156,43 +175,60 @@
 
 <div class="container">
 
-  <!-- PIO -->
-  <div id="pio-zone">
-    <img id="pio-face" src="pio-images/pio-neutral.png" />
-    <div id="pio-mood">PIO is calm 🌙</div>
-  </div>
+  <!-- LEFT COLUMN -->
+  <div>
+    <div id="pio-zone">
+      <img id="pio-face" src="pio-images/pio-neutral.png" />
+      <div id="pio-mood">PIO is calm 🌙</div>
+    </div>
 
-  <!-- CHART -->
-  <div id="tv_chart"></div>
+    <div id="tv_chart"></div>
 
-  <!-- HEALTH -->
-  <div id="pio-health">
-    <div class="health-grid">
-      <div class="health-card">
-        <div class="health-title">🩺 PIO Health</div>
-        <div id="pioHealth" class="health-value health-mid">Stable</div>
-      </div>
-      <div class="health-card">
-        <div class="health-title">🏟 PIO Arena</div>
-        <div id="pioArena" class="health-value">Neutral Zone 🌗</div>
-      </div>
-      <div class="health-card">
-        <div class="health-title">🌱 Environment</div>
-        <div id="pioEnv" class="health-value health-mid">Uncertain</div>
-      </div>
-      <div class="health-card">
-        <div class="health-title">🧬 PIO Age</div>
-        <div id="pioAge" class="health-value">Loading…</div>
+    <div class="panel" id="pio-health">
+      <div class="health-grid">
+        <div class="health-card">
+          <div class="health-title">🩺 PIO Health</div>
+          <div id="pioHealth" class="health-value health-mid">Stable</div>
+        </div>
+        <div class="health-card">
+          <div class="health-title">🏟 PIO Arena</div>
+          <div id="pioArena" class="health-value">Neutral Zone 🌗</div>
+        </div>
+        <div class="health-card">
+          <div class="health-title">🌱 Environment</div>
+          <div id="pioEnv" class="health-value health-mid">Uncertain</div>
+        </div>
+        <div class="health-card">
+          <div class="health-title">🧬 PIO Age</div>
+          <div id="pioAge" class="health-value">Loading…</div>
+        </div>
       </div>
     </div>
+
+    <div class="buttons">
+      <button onclick="rewardPIO()">🌙 Reward PIO</button>
+    </div>
+
+    <div id="moonOutput">🌙 Awaiting lunar action...</div>
   </div>
 
-  <!-- BUTTONS -->
-  <div class="buttons">
-    <button onclick="rewardPIO()">🌙 Reward PIO</button>
+  <!-- RIGHT COLUMN -->
+  <div class="panel" id="lunar-panel">
+    <div class="lunar-card">
+      <div class="lunar-title">🌕 Lunar Matrix</div>
+      <div id="lunarMatrix" class="lunar-value">Loading...</div>
+    </div>
+    <div class="lunar-card">
+      <div class="lunar-title">📅 Lunar Calendar Numbers</div>
+      <div id="lunarNumbers" class="lunar-value">Loading...</div>
+    </div>
+    <div class="lunar-card">
+      <div class="lunar-title">♈ Lunar Signs</div>
+      <div id="lunarSigns" class="lunar-value">Loading...</div>
+    </div>
+    <canvas id="lunarCircle" width="250" height="250"></canvas>
   </div>
 
-  <div id="moonOutput">🌙 Awaiting lunar action...</div>
 </div>
 
 <footer>
@@ -200,10 +236,13 @@
 </footer>
 
 <script>
+  // ===============================
+  // TradingView Chart
+  // ===============================
   new TradingView.widget({
     container_id: "tv_chart",
     width: "100%",
-    height: 420,
+    height: 300,
     symbol: "SOLUSDT",
     interval: "60",
     theme: "dark"
@@ -211,6 +250,9 @@
 
   const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
 
+  // ===============================
+  // PIO Age
+  // ===============================
   function updateAge() {
     const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
     const months = Math.floor(days / 30.44);
@@ -218,15 +260,15 @@
       `${months} months (${days} days)`;
   }
 
+  // ===============================
+  // Reward PIO
+  // ===============================
   async function rewardPIO() {
     const output = document.getElementById("moonOutput");
     output.innerHTML = "🌕 Sending lunar signal...";
 
     try {
-      const res = await fetch("https://ampedmyc.pythonanywhere.com/reward", {
-        method: "POST"
-      });
-
+      const res = await fetch("https://ampedmyc.pythonanywhere.com/reward", { method: "POST" });
       if (!res.ok) throw new Error("HTTP " + res.status);
 
       const data = await res.json();
@@ -235,7 +277,6 @@
       data.treats.forEach((t, i) => {
         html += `🌙 Treat ${i + 1}: Energy ${t.energy}<br>`;
       });
-
       output.innerHTML = html;
 
     } catch (err) {
@@ -244,7 +285,117 @@
     }
   }
 
+  // ===============================
+  // Lunar Consultation (placeholder logic)
+  // ===============================
+  function updateLunarPanel() {
+    const matrix = Math.floor(Math.random()*99 + 1); // 1-99
+    const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
+    const signs = ["🌑 New Moon", "🌓 First Quarter", "🌕 Full Moon", "🌗 Last Quarter"];
+    const currentSign = signs[Math.floor(Math.random()*signs.length)];
+
+    document.getElementById("lunarMatrix").innerText = matrix;
+    document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
+    document.getElementById("lunarSigns").innerText = currentSign;
+
+    // Draw simple circle diagram
+    const canvas = document.getElementById("lunarCircle");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = "#8cffc1";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(125,125,100,0,Math.PI*2);
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffd479";
+    numbers.forEach((n,i)=>{
+      const angle = (i/6)*Math.PI*2 - Math.PI/2;
+      const x = 125 + Math.cos(angle)*100;
+      const y = 125 + Math.sin(angle)*100;
+      ctx.beginPath();
+      ctx.arc(x,y,10,0,Math.PI*2);
+      ctx.fill();
+    });
+  }
+
+  // ===============================
+  // PIO Health Simulation
+  // ===============================
+  function updateHealth(change) {
+    const h = document.getElementById("pioHealth");
+    const a = document.getElementById("pioArena");
+    const e = document.getElementById("pioEnv");
+
+    h.className = "health-value";
+    e.className = "health-value";
+
+    if (change > 3) {
+      h.innerText = "Thriving 🚀";
+      h.classList.add("health-good");
+      a.innerText = "Moon Arena 🌕";
+      e.innerText = "Bullish";
+      e.classList.add("health-good");
+    } else if (change > 0.5) {
+      h.innerText = "Healthy 😺";
+      h.classList.add("health-good");
+      a.innerText = "Memecoin Season 🌈";
+      e.innerText = "Optimistic";
+      e.classList.add("health-mid");
+    } else if (change > -1) {
+      h.innerText = "Stable 🌙";
+      h.classList.add("health-mid");
+      a.innerText = "Neutral Zone 🌗";
+      e.innerText = "Uncertain";
+      e.classList.add("health-mid");
+    } else {
+      h.innerText = "Under Stress 😿";
+      h.classList.add("health-bad");
+      a.innerText = "Shadow Arena 🌑";
+      e.innerText = "Bearish";
+      e.classList.add("health-bad");
+    }
+  }
+
+  function updatePIO(change) {
+    const face = document.getElementById("pio-face");
+    const mood = document.getElementById("pio-mood");
+    face.className = "";
+
+    if (change < -2) {
+      face.src = "pio-images/pio-sad.png";
+      mood.innerText = "PIO feels sad 😿";
+    } else if (change < -0.5) {
+      face.src = "pio-images/pio-worried.png";
+      mood.innerText = "PIO is worried 😟";
+    } else if (change < 0.5) {
+      face.src = "pio-images/pio-neutral.png";
+      mood.innerText = "PIO is calm 🌙";
+    } else if (change < 3) {
+      face.src = "pio-images/pio-happy.png";
+      face.classList.add("pio-happy");
+      mood.innerText = "PIO is happy 😺";
+    } else if (change < 7) {
+      face.src = "pio-images/pio-laugh.png";
+      face.classList.add("pio-laugh");
+      mood.innerText = "PIO is laughing 😹";
+    } else {
+      face.src = "pio-images/pio-sing.png";
+      face.classList.add("pio-sing");
+      mood.innerText = "PIO ENTERED AP MODE 🎤🔥";
+    }
+  }
+
+  function simulateMarket() {
+    const change = (Math.random() - 0.45) * 8;
+    updatePIO(change);
+    updateHealth(change);
+    updateLunarPanel();
+  }
+
   updateAge();
+  simulateMarket();
+  setInterval(simulateMarket, 10000);
 </script>
 
 </body>
