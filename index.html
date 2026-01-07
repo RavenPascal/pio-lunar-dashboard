@@ -36,6 +36,49 @@
       padding: 20px;
     }
 
+    /* ===============================
+       PIO TAMAGOTCHI
+    =============================== */
+    #pio-zone {
+      margin: 30px auto 10px;
+    }
+
+    #pio-face {
+      width: 180px;
+      transition: transform 0.4s ease;
+    }
+
+    #pio-mood {
+      margin-top: 10px;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .pio-happy { transform: scale(1.05); }
+    .pio-laugh { transform: scale(1.15) rotate(2deg); }
+    .pio-sing  { animation: pioBounce 0.6s infinite; }
+
+    @keyframes pioBounce {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* ===============================
+       CHART DE-EMPHASIS
+    =============================== */
+    #tv_chart {
+      height: 420px;
+      opacity: 0.25;
+      filter: blur(1px);
+      transition: opacity 0.3s, filter 0.3s;
+    }
+
+    #tv_chart:hover {
+      opacity: 1;
+      filter: none;
+    }
+
     .buttons {
       margin: 20px 0;
     }
@@ -84,8 +127,14 @@
 
 <div class="container">
 
+  <!-- PIO TAMAGOTCHI -->
+  <div id="pio-zone">
+    <img id="pio-face" src="pio-neutral.svg" alt="PIO Mood" />
+    <div id="pio-mood">PIO is calm 🌙</div>
+  </div>
+
   <!-- Chart -->
-  <div id="tv_chart" style="height: 420px;"></div>
+  <div id="tv_chart"></div>
 
   <!-- Buttons -->
   <div class="buttons">
@@ -102,9 +151,9 @@
 </footer>
 
 <script>
-  // ===============================
-  // TradingView Chart
-  // ===============================
+  /* ===============================
+     TRADINGVIEW CHART
+  =============================== */
   new TradingView.widget({
     container_id: "tv_chart",
     width: "100%",
@@ -121,9 +170,9 @@
     allow_symbol_change: true
   });
 
-  // ===============================
-  // Backend Connection
-  // ===============================
+  /* ===============================
+     BACKEND
+  =============================== */
   const BACKEND_URL = "https://ampedmyc.pythonanywhere.com";
 
   async function rewardPIO() {
@@ -133,9 +182,7 @@
     try {
       const res = await fetch(`${BACKEND_URL}/reward`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        }
+        headers: { "Content-Type": "application/json" }
       });
 
       if (!res.ok) throw new Error("Backend error");
@@ -148,7 +195,6 @@
       });
 
       document.getElementById("moonOutput").innerHTML = output;
-      console.log("🌙 Rewarded PIO:", data.treats);
 
     } catch (err) {
       document.getElementById("moonOutput").innerHTML =
@@ -160,8 +206,47 @@
   function watchGrow() {
     document.getElementById("moonOutput").innerHTML =
       "📈 Watching PIO grow... Moon phase syncing.";
-    console.log("📈 Watching PIO grow");
   }
+
+  /* ===============================
+     PIO EMOTION ENGINE (SIM)
+  =============================== */
+  function updatePIO(change) {
+    const face = document.getElementById("pio-face");
+    const mood = document.getElementById("pio-mood");
+
+    face.className = "";
+
+    if (change < -2) {
+      face.src = "pio-sad.svg";
+      mood.innerText = "PIO feels sad 😿";
+    } else if (change < -0.5) {
+      face.src = "pio-worried.svg";
+      mood.innerText = "PIO is worried 😟";
+    } else if (change < 0.5) {
+      face.src = "pio-neutral.svg";
+      mood.innerText = "PIO is calm 🌙";
+    } else if (change < 3) {
+      face.src = "pio-happy.svg";
+      face.classList.add("pio-happy");
+      mood.innerText = "PIO is happy 😺";
+    } else if (change < 7) {
+      face.src = "pio-laugh.svg";
+      face.classList.add("pio-laugh");
+      mood.innerText = "PIO is laughing 😹";
+    } else {
+      face.src = "pio-sing.svg";
+      face.classList.add("pio-sing");
+      mood.innerText = "PIO ENTERED AP MODE 🎤🔥";
+    }
+  }
+
+  function simulateMarket() {
+    const change = (Math.random() - 0.45) * 8; // % move
+    updatePIO(change);
+  }
+
+  setInterval(simulateMarket, 10000);
 </script>
 
 </body>
