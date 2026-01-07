@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>PIO 🌙 Lunar Dashboard</title>
-
-  <!-- TradingView Widget -->
   <script src="https://s3.tradingview.com/tv.js"></script>
 
   <style>
@@ -17,66 +15,25 @@
     }
 
     header { padding: 20px; }
-    h1 { margin-bottom: 5px; }
+    .container { max-width: 1100px; margin: auto; padding: 20px; }
 
-    .contract {
-      font-size: 12px;
-      opacity: 0.8;
-      word-break: break-all;
-    }
+    #pio-face { width: 180px; transition: transform 0.4s ease; }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    /* ===============================
-       PIO TAMAGOTCHI
-    =============================== */
-    #pio-zone { margin: 30px auto 10px; }
-
-    #pio-face {
-      width: 180px;
-      transition: transform 0.4s ease;
-    }
-
-    #pio-mood {
-      margin-top: 10px;
-      font-size: 18px;
-      opacity: 0.9;
-    }
-
-    .pio-happy { transform: scale(1.05); }
-    .pio-laugh { transform: scale(1.15) rotate(2deg); }
-    .pio-sing  { animation: pioBounce 0.6s infinite; }
-
-    @keyframes pioBounce {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-      100% { transform: translateY(0); }
-    }
-
-    /* ===============================
-       CHART
-    =============================== */
     #tv_chart {
       height: 420px;
       opacity: 0.25;
       filter: blur(1px);
-      transition: opacity 0.3s, filter 0.3s;
     }
 
-    #tv_chart:hover {
-      opacity: 1;
-      filter: none;
+    /* TWO COLUMN SYSTEM */
+    .dual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 25px;
     }
 
-    /* ===============================
-       PIO HEALTH PANEL
-    =============================== */
-    #pio-health {
-      margin: 25px auto;
+    .panel {
       padding: 20px;
       background: linear-gradient(180deg, rgba(30,20,60,0.7), rgba(10,5,20,0.9));
       border-radius: 18px;
@@ -86,56 +43,39 @@
 
     .health-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 15px;
     }
 
-    .health-card {
+    .card {
       background: rgba(255,255,255,0.05);
       border-radius: 14px;
       padding: 15px;
     }
 
-    .health-title {
+    .title {
       font-size: 13px;
       opacity: 0.7;
       margin-bottom: 6px;
     }
 
-    .health-value {
+    .value {
       font-size: 20px;
       font-weight: bold;
     }
 
-    .health-good { color: #8cffc1; }
-    .health-mid  { color: #ffd479; }
-    .health-bad  { color: #ff8c8c; }
-
-    .buttons { margin: 20px 0; }
-
     button {
+      margin-top: 20px;
       background: linear-gradient(135deg, #6f5cff, #c77dff);
       border: none;
       color: #fff;
       padding: 14px 22px;
-      margin: 10px;
       border-radius: 30px;
       font-size: 16px;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(180,120,255,0.5);
     }
 
-    #moonOutput {
-      margin-top: 15px;
-      font-size: 18px;
-      min-height: 40px;
-    }
-
-    footer {
-      opacity: 0.5;
-      font-size: 12px;
-      margin: 20px;
-    }
+    footer { opacity: 0.5; font-size: 12px; margin: 20px; }
   </style>
 </head>
 
@@ -143,51 +83,73 @@
 
 <header>
   <h1>PIO 🌙 Lunar Treat Dashboard</h1>
-  <div class="contract">
-    $TSUKI Contract (Solana):<br>
-    463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA
-  </div>
 </header>
 
 <div class="container">
 
-  <div id="pio-zone">
-    <img id="pio-face" src="pio-images/pio-neutral.png" />
-    <div id="pio-mood">PIO is calm 🌙</div>
-  </div>
-
+  <img id="pio-face" src="pio-images/pio-neutral.png">
   <div id="tv_chart"></div>
 
-  <div id="pio-health">
-    <div class="health-grid">
-      <div class="health-card">
-        <div class="health-title">🩺 PIO Health</div>
-        <div id="pioHealth" class="health-value health-mid">Stable</div>
-      </div>
-      <div class="health-card">
-        <div class="health-title">🏟 PIO Arena</div>
-        <div id="pioArena" class="health-value">Neutral Zone 🌗</div>
-      </div>
-      <div class="health-card">
-        <div class="health-title">🌱 Environment</div>
-        <div id="pioEnv" class="health-value health-mid">Uncertain</div>
-      </div>
-      <div class="health-card">
-        <div class="health-title">🧬 PIO Age</div>
-        <div id="pioAge" class="health-value">Loading…</div>
+  <!-- TWO COLUMN PANELS -->
+  <div class="dual-grid">
+
+    <!-- LEFT: PIO HEALTH -->
+    <div class="panel">
+      <h3>🩺 PIO Health</h3>
+      <div class="health-grid">
+        <div class="card">
+          <div class="title">Health</div>
+          <div id="pioHealth" class="value">Stable</div>
+        </div>
+        <div class="card">
+          <div class="title">Arena</div>
+          <div id="pioArena" class="value">Neutral 🌗</div>
+        </div>
+        <div class="card">
+          <div class="title">Environment</div>
+          <div id="pioEnv" class="value">Uncertain</div>
+        </div>
+        <div class="card">
+          <div class="title">PIO Age</div>
+          <div id="pioAge" class="value">Loading…</div>
+        </div>
       </div>
     </div>
+
+    <!-- RIGHT: LUNAR CONSTELLATION -->
+    <div class="panel">
+      <h3>🌌 Lunar Constellation</h3>
+
+      <div class="card">
+        <div class="title">Active Moon Sign</div>
+        <div id="lunarSign" class="value">—</div>
+      </div>
+
+      <div class="card">
+        <div class="title">Significant Numbers</div>
+        <div id="lunarNumbers" class="value">—</div>
+      </div>
+
+      <div class="card">
+        <div class="title">Lunar Matrix</div>
+        <div id="lunarMatrix" class="value">—</div>
+      </div>
+
+      <div class="card">
+        <div class="title">UTC Sync</div>
+        <div id="lunarTime" class="value">—</div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="buttons">
-    <button onclick="rewardPIO()">🌙 Reward PIO</button>
-  </div>
+  <button onclick="rewardPIO()">🌙 Reward PIO</button>
+  <div id="moonOutput">Awaiting lunar action…</div>
 
-  <div id="moonOutput">🌙 Awaiting lunar action...</div>
 </div>
 
 <footer>
-  Lunar systems online • Trust-based • Moon-synced
+  Lunar systems online • Moon-synced • Deterministic
 </footer>
 
 <script>
@@ -203,39 +165,51 @@
   const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
 
   function updateAge() {
-    const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
-    const months = Math.floor(days / 30.44);
-    document.getElementById("pioAge").innerText =
-      `${months} months (${days} days)`;
+    const days = Math.floor((Date.now() - LAUNCH_DATE) / 86400000);
+    document.getElementById("pioAge").innerText = `${days} days`;
+  }
+
+  // 🌙 LUNAR LOGIC (SYMBOLIC / NUMERICAL)
+  const MOON_SIGNS = [
+    "New Moon 🌑", "Waxing Crescent 🌒", "First Quarter 🌓",
+    "Waxing Gibbous 🌔", "Full Moon 🌕",
+    "Waning Gibbous 🌖", "Last Quarter 🌗", "Waning Crescent 🌘"
+  ];
+
+  function updateLunarSystem() {
+    const now = new Date();
+    const day = now.getUTCDate();
+    const hour = now.getUTCHours();
+
+    const signIndex = day % MOON_SIGNS.length;
+    const matrix = [
+      (day + hour) % 9 + 1,
+      (day * hour) % 9 + 1,
+      (day + hour * 2) % 9 + 1
+    ].join(" • ");
+
+    document.getElementById("lunarSign").innerText = MOON_SIGNS[signIndex];
+    document.getElementById("lunarNumbers").innerText =
+      `Day ${day} • Hour ${hour} • Index ${signIndex}`;
+    document.getElementById("lunarMatrix").innerText = matrix;
+    document.getElementById("lunarTime").innerText = now.toUTCString();
   }
 
   async function rewardPIO() {
-    const output = document.getElementById("moonOutput");
-    output.innerHTML = "🌕 Sending lunar signal...";
-
+    const out = document.getElementById("moonOutput");
+    out.innerText = "🌕 Sending lunar signal…";
     try {
-      const res = await fetch("https://ampedmyc.pythonanywhere.com/reward", {
-        method: "POST"
-      });
-
-      if (!res.ok) throw new Error("HTTP " + res.status);
-
-      const data = await res.json();
-
-      let html = `PIO received <strong>${data.treats.length} 🌙 Lunar Treat(s)</strong><br>`;
-      data.treats.forEach((t, i) => {
-        html += `🌙 Treat ${i + 1}: Energy ${t.energy}<br>`;
-      });
-
-      output.innerHTML = html;
-
-    } catch (err) {
-      console.error(err);
-      output.innerHTML = "⚠️ Lunar Treat Engine unreachable.";
+      const r = await fetch("https://ampedmyc.pythonanywhere.com/reward", { method: "POST" });
+      const d = await r.json();
+      out.innerHTML = `PIO received ${d.treats.length} 🌙 Lunar Treat(s)`;
+    } catch {
+      out.innerText = "⚠️ Lunar Engine unreachable";
     }
   }
 
   updateAge();
+  updateLunarSystem();
+  setInterval(updateLunarSystem, 60000);
 </script>
 
 </body>
