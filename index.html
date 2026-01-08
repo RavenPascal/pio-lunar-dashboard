@@ -161,7 +161,6 @@
   $TSUKI Lunar Dashboard • Live on Solana • Trust-based 🌙
 </footer>
 
-<script src="https://unpkg.com/@solana/web3.js@1.76.0/lib/index.iife.js"></script>
 <script>
   const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
 
@@ -188,16 +187,24 @@
   }
 
   async function fetchTsukiData() {
-    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
-    const mintAddress = new solanaWeb3.PublicKey("463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA");
+    const mintAddress = "463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA";
 
-    // Fetch total supply
-    const supplyInfo = await connection.getTokenSupply(mintAddress);
-    document.getElementById("tsukiPrice").innerText = `Supply: ${supplyInfo.value.uiAmountString} $TSUKI`;
+    try {
+      const res = await fetch(`https://public-api.solscan.io/v1/token/price?tokenAddress=${mintAddress}`);
+      const data = await res.json();
 
-    // Fetch largest accounts for holders count
-    const accounts = await connection.getTokenLargestAccounts(mintAddress);
-    document.getElementById("tsukiVolume").innerText = `Top holders: ${accounts.value.length}`;
+      if (data.success) {
+        document.getElementById("tsukiPrice").innerText = `$TSUKI Price: $${data.data.price.toFixed(6)}`;
+        document.getElementById("tsukiVolume").innerText = `24h Volume: $${(data.data.volume24h || 0).toLocaleString()}`;
+      } else {
+        document.getElementById("tsukiPrice").innerText = "Price unavailable";
+        document.getElementById("tsukiVolume").innerText = "";
+      }
+    } catch (err) {
+      console.error(err);
+      document.getElementById("tsukiPrice").innerText = "⚠️ Price load error";
+      document.getElementById("tsukiVolume").innerText = "";
+    }
   }
 
   function updateHealth(change){
