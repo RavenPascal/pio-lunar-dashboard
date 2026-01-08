@@ -106,8 +106,8 @@
 
     <div class="panel" id="pio-chart-panel">
       <h3 style="text-align:center;">📊 $TSUKI Live Data</h3>
-      <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading price…</div>
-      <div id="tsukiVolume" style="font-size:16px; color:#a0ffb8;">Loading volume…</div>
+      <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading data…</div>
+      <div id="tsukiVolume" style="font-size:16px; color:#a0ffb8;">Loading data…</div>
     </div>
 
     <div class="panel" id="pio-health">
@@ -162,114 +162,120 @@
 </footer>
 
 <script>
-  const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
+const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
 
-  function updateAge() {
-    const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
-    const months = Math.floor(days / 30.44);
-    document.getElementById("pioAge").innerText = `${months} months (${days} days)`;
+function updateAge() {
+  const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
+  const months = Math.floor(days / 30.44);
+  document.getElementById("pioAge").innerText = `${months} months (${days} days)`;
+}
+
+// Lunar Treat reward
+async function rewardPIO() {
+  const output = document.getElementById("moonOutput");
+  output.innerHTML = "🌕 Sending lunar signal...";
+  try {
+    const res = await fetch("https://ampedmyc.pythonanywhere.com/reward", { method: "POST" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    let html = `PIO received <strong>${data.treats.length} 🌙 Lunar Treat(s)</strong><br>`;
+    data.treats.forEach((t,i)=>{ html += `🌙 Treat ${i+1}: Energy ${t.energy}<br>`; });
+    output.innerHTML = html;
+  } catch(err){
+    console.error(err);
+    output.innerHTML = "⚠️ Lunar Treat Engine unreachable.";
   }
+}
 
-  async function rewardPIO() {
-    const output = document.getElementById("moonOutput");
-    output.innerHTML = "🌕 Sending lunar signal...";
-    try {
-      const res = await fetch("https://ampedmyc.pythonanywhere.com/reward", { method: "POST" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
-      let html = `PIO received <strong>${data.treats.length} 🌙 Lunar Treat(s)</strong><br>`;
-      data.treats.forEach((t,i)=>{ html += `🌙 Treat ${i+1}: Energy ${t.energy}<br>`; });
-      output.innerHTML = html;
-    } catch(err){
-      console.error(err);
-      output.innerHTML = "⚠️ Lunar Treat Engine unreachable.";
-    }
-  }
+// ✅ Reliable Solscan fetch (no CORS issue)
+async function fetchTsukiData() {
+  const mintAddress = "463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA";
 
-  async function fetchTsukiData() {
-    const mintAddress = "463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA";
+  try {
+    const res = await fetch(`https://api.solscan.io/v1/token/meta?tokenAddress=${mintAddress}`);
+    const data = await res.json();
 
-    try {
-      const res = await fetch(`https://public-api.solscan.io/v1/token/price?tokenAddress=${mintAddress}`);
-      const data = await res.json();
+    if (data && data.symbol) {
+      const supply = parseFloat(data.tokenAmount.uiAmountString).toLocaleString();
+      const holders = data.holders || "N/A";
 
-      if (data.success) {
-        document.getElementById("tsukiPrice").innerText = `$TSUKI Price: $${data.data.price.toFixed(6)}`;
-        document.getElementById("tsukiVolume").innerText = `24h Volume: $${(data.data.volume24h || 0).toLocaleString()}`;
-      } else {
-        document.getElementById("tsukiPrice").innerText = "Price unavailable";
-        document.getElementById("tsukiVolume").innerText = "";
-      }
-    } catch (err) {
-      console.error(err);
-      document.getElementById("tsukiPrice").innerText = "⚠️ Price load error";
+      document.getElementById("tsukiPrice").innerText = `$TSUKI Supply: ${supply}`;
+      document.getElementById("tsukiVolume").innerText = `Holders: ${holders}`;
+    } else {
+      document.getElementById("tsukiPrice").innerText = "Data unavailable";
       document.getElementById("tsukiVolume").innerText = "";
     }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("tsukiPrice").innerText = "⚠️ Data load error";
+    document.getElementById("tsukiVolume").innerText = "";
   }
+}
 
-  function updateHealth(change){
-    const h=document.getElementById("pioHealth");
-    const a=document.getElementById("pioArena");
-    const e=document.getElementById("pioEnv");
-    h.className="health-value"; e.className="health-value";
-    if(change>3){ h.innerText="Thriving 🚀"; h.classList.add("health-good"); a.innerText="Moon Arena 🌕"; e.innerText="Bullish"; e.classList.add("health-good"); }
-    else if(change>0.5){ h.innerText="Healthy 😺"; h.classList.add("health-good"); a.innerText="Memecoin Season 🌈"; e.innerText="Optimistic"; e.classList.add("health-mid"); }
-    else if(change>-1){ h.innerText="Stable 🌙"; h.classList.add("health-mid"); a.innerText="Neutral Zone 🌗"; e.innerText="Uncertain"; e.classList.add("health-mid"); }
-    else{ h.innerText="Under Stress 😿"; h.classList.add("health-bad"); a.innerText="Shadow Arena 🌑"; e.innerText="Bearish"; e.classList.add("health-bad"); }
-  }
+// Health & Mood
+function updateHealth(change){
+  const h=document.getElementById("pioHealth");
+  const a=document.getElementById("pioArena");
+  const e=document.getElementById("pioEnv");
+  h.className="health-value"; e.className="health-value";
+  if(change>3){ h.innerText="Thriving 🚀"; h.classList.add("health-good"); a.innerText="Moon Arena 🌕"; e.innerText="Bullish"; e.classList.add("health-good"); }
+  else if(change>0.5){ h.innerText="Healthy 😺"; h.classList.add("health-good"); a.innerText="Memecoin Season 🌈"; e.innerText="Optimistic"; e.classList.add("health-mid"); }
+  else if(change>-1){ h.innerText="Stable 🌙"; h.classList.add("health-mid"); a.innerText="Neutral Zone 🌗"; e.innerText="Uncertain"; e.classList.add("health-mid"); }
+  else{ h.innerText="Under Stress 😿"; h.classList.add("health-bad"); a.innerText="Shadow Arena 🌑"; e.innerText="Bearish"; e.classList.add("health-bad"); }
+}
 
-  function updatePIO(change){
-    const face=document.getElementById("pio-face");
-    const mood=document.getElementById("pio-mood");
-    face.className="";
-    if(change<-2){ face.src="pio-images/pio-sad.png"; mood.innerText="PIO feels sad 😿"; }
-    else if(change<-0.5){ face.src="pio-images/pio-worried.png"; mood.innerText="PIO is worried 😟"; }
-    else if(change<0.5){ face.src="pio-images/pio-neutral.png"; mood.innerText="PIO is calm 🌙"; }
-    else if(change<3){ face.src="pio-images/pio-happy.png"; face.classList.add("pio-happy"); mood.innerText="PIO is happy 😺"; }
-    else if(change<7){ face.src="pio-images/pio-laugh.png"; face.classList.add("pio-laugh"); mood.innerText="PIO is laughing 😹"; }
-    else{ face.src="pio-images/pio-sing.png"; face.classList.add("pio-sing"); mood.innerText="PIO ENTERED AP MODE 🎤🔥"; }
-  }
+function updatePIO(change){
+  const face=document.getElementById("pio-face");
+  const mood=document.getElementById("pio-mood");
+  face.className="";
+  if(change<-2){ face.src="pio-images/pio-sad.png"; mood.innerText="PIO feels sad 😿"; }
+  else if(change<-0.5){ face.src="pio-images/pio-worried.png"; mood.innerText="PIO is worried 😟"; }
+  else if(change<0.5){ face.src="pio-images/pio-neutral.png"; mood.innerText="PIO is calm 🌙"; }
+  else if(change<3){ face.src="pio-images/pio-happy.png"; face.classList.add("pio-happy"); mood.innerText="PIO is happy 😺"; }
+  else if(change<7){ face.src="pio-images/pio-laugh.png"; face.classList.add("pio-laugh"); mood.innerText="PIO is laughing 😹"; }
+  else{ face.src="pio-images/pio-sing.png"; face.classList.add("pio-sing"); mood.innerText="PIO ENTERED AP MODE 🎤🔥"; }
+}
 
-  function updateLunarPanel() {
-    const matrix = Math.floor(Math.random()*99 + 1);
-    const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
-    const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
-    const currentSign = signs[Math.floor(Math.random()*signs.length)];
-    document.getElementById("lunarMatrix").innerText = matrix;
-    document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
-    document.getElementById("lunarSigns").innerText = currentSign;
+function updateLunarPanel() {
+  const matrix = Math.floor(Math.random()*99 + 1);
+  const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
+  const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
+  const currentSign = signs[Math.floor(Math.random()*signs.length)];
+  document.getElementById("lunarMatrix").innerText = matrix;
+  document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
+  document.getElementById("lunarSigns").innerText = currentSign;
 
-    const canvas = document.getElementById("lunarCircle");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.strokeStyle = "#00ff88";
-    ctx.lineWidth = 4;
+  const canvas = document.getElementById("lunarCircle");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle = "#00ff88";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(125,125,100,0,Math.PI*2);
+  ctx.stroke();
+  ctx.fillStyle = "#00ff88";
+  numbers.forEach((n,i)=>{
+    const angle = (i/6)*Math.PI*2 - Math.PI/2;
+    const x = 125 + Math.cos(angle)*100;
+    const y = 125 + Math.sin(angle)*100;
     ctx.beginPath();
-    ctx.arc(125,125,100,0,Math.PI*2);
-    ctx.stroke();
-    ctx.fillStyle = "#00ff88";
-    numbers.forEach((n,i)=>{
-      const angle = (i/6)*Math.PI*2 - Math.PI/2;
-      const x = 125 + Math.cos(angle)*100;
-      const y = 125 + Math.sin(angle)*100;
-      ctx.beginPath();
-      ctx.arc(x,y,10,0,Math.PI*2);
-      ctx.fill();
-    });
-  }
+    ctx.arc(x,y,10,0,Math.PI*2);
+    ctx.fill();
+  });
+}
 
-  function simulateMarket(){
-    const change=(Math.random()-0.45)*8;
-    updatePIO(change);
-    updateHealth(change);
-    updateLunarPanel();
-  }
+function simulateMarket(){
+  const change=(Math.random()-0.45)*8;
+  updatePIO(change);
+  updateHealth(change);
+  updateLunarPanel();
+}
 
-  updateAge();
-  fetchTsukiData();
-  simulateMarket();
-  setInterval(simulateMarket,10000);
-  setInterval(fetchTsukiData,60000); // Refresh token data every 60s
+updateAge();
+fetchTsukiData();
+simulateMarket();
+setInterval(simulateMarket,10000);
+setInterval(fetchTsukiData,60000);
 </script>
 
 </body>
