@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>PIO 🌙 Lunar Dashboard</title>
+  <title>PIO 🌙 Lunar $TSUKI Dashboard</title>
 
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: radial-gradient(circle at top, #0b0b1a, #000);
-      color: #e6e6ff;
+      color: #e6ffe6;
     }
 
     header { padding: 20px; text-align: center; }
@@ -39,30 +39,47 @@
     .pio-sing  { animation: pioBounce 0.6s infinite; }
     @keyframes pioBounce { 0%{transform:translateY(0);}50%{transform:translateY(-12px);}100%{transform:translateY(0);} }
 
-    #tv_chart iframe {
-      width: 100%;
-      height: 300px;
-      border-radius: 14px;
-      border: none;
+    .panel { 
+      background: rgba(0,0,0,0.6); 
+      padding: 20px; 
+      border-radius: 18px; 
+      box-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88 inset; 
+      border: 2px solid #00ff88;
     }
-
-    .panel { background: linear-gradient(180deg, rgba(30,20,60,0.7), rgba(10,5,20,0.9)); padding: 20px; border-radius: 18px; box-shadow: 0 0 30px rgba(160,120,255,0.25); }
     .health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-    .health-card, .lunar-card { background: rgba(255,255,255,0.05); border-radius: 14px; padding: 15px; text-align: center; }
+    .health-card, .lunar-card { 
+      background: rgba(0,255,136,0.05); 
+      border-radius: 14px; 
+      padding: 15px; 
+      text-align: center; 
+      border: 1px solid #00ff88; 
+      box-shadow: 0 0 15px #00ff88 inset; 
+    }
     .health-title, .lunar-title { font-size: 13px; opacity: 0.7; margin-bottom: 6px; }
     .health-value, .lunar-value { font-size: 18px; font-weight: bold; }
     .health-good { color: #8cffc1; }
-    .health-mid  { color: #ffd479; }
-    .health-bad  { color: #ff8c8c; }
+    .health-mid  { color: #a0ffb8; }
+    .health-bad  { color: #ff6a6a; }
 
     .buttons { margin: 20px 0; text-align: center; }
-    button { background: linear-gradient(135deg, #6f5cff, #c77dff); border: none; color: #fff; padding: 14px 22px; margin: 10px; border-radius: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 0 20px rgba(180,120,255,0.5); }
-    button:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(220,160,255,0.9); }
+    button { 
+      background: linear-gradient(135deg, #00ff88, #00cc66); 
+      border: none; 
+      color: #000; 
+      padding: 14px 22px; 
+      margin: 10px; 
+      border-radius: 30px; 
+      font-size: 16px; 
+      cursor: pointer; 
+      box-shadow: 0 0 20px #00ff88; 
+      font-weight: bold;
+    }
+    button:hover { transform: scale(1.05); box-shadow: 0 0 30px #00ff88; }
 
     #moonOutput { margin-top: 15px; font-size: 18px; min-height: 40px; text-align: center; }
 
     #lunar-panel { display: flex; flex-direction: column; gap: 15px; }
-    canvas { display: block; margin: auto; background: rgba(255,255,255,0.02); border-radius: 50%; }
+    canvas { display: block; margin: auto; background: rgba(0,255,136,0.02); border-radius: 50%; }
 
     footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
   </style>
@@ -71,7 +88,7 @@
 <body>
 
 <header>
-  <h1>PIO 🌙 Lunar Treat Dashboard</h1>
+  <h1>PIO 🌙 $TSUKI Lunar Dashboard</h1>
   <div class="contract">
     $TSUKI Contract (Solana):<br>
     463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA
@@ -87,8 +104,10 @@
       <div id="pio-mood">PIO is calm 🌙</div>
     </div>
 
-    <div id="tv_chart">
-      <iframe src="https://dexscreener.com/solana/7ymhxapzcefuo24kngp77mgj1crdav8ayyfqgvb5skzf?embed=1"></iframe>
+    <div class="panel" id="pio-chart-panel">
+      <h3 style="text-align:center;">📊 $TSUKI Live Data</h3>
+      <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading price…</div>
+      <div id="tsukiVolume" style="font-size:16px; color:#a0ffb8;">Loading volume…</div>
     </div>
 
     <div class="panel" id="pio-health">
@@ -139,9 +158,10 @@
 </div>
 
 <footer>
-  Lunar systems online • Trust-based • Moon-synced
+  $TSUKI Lunar Dashboard • Live on Solana • Trust-based 🌙
 </footer>
 
+<script src="https://unpkg.com/@solana/web3.js@1.76.0/lib/index.iife.js"></script>
 <script>
   const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
 
@@ -167,32 +187,17 @@
     }
   }
 
-  function updateLunarPanel() {
-    const matrix = Math.floor(Math.random()*99 + 1);
-    const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
-    const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
-    const currentSign = signs[Math.floor(Math.random()*signs.length)];
-    document.getElementById("lunarMatrix").innerText = matrix;
-    document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
-    document.getElementById("lunarSigns").innerText = currentSign;
+  async function fetchTsukiData() {
+    const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+    const mintAddress = new solanaWeb3.PublicKey("463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA");
 
-    const canvas = document.getElementById("lunarCircle");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.strokeStyle = "#8cffc1";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(125,125,100,0,Math.PI*2);
-    ctx.stroke();
-    ctx.fillStyle = "#ffd479";
-    numbers.forEach((n,i)=>{
-      const angle = (i/6)*Math.PI*2 - Math.PI/2;
-      const x = 125 + Math.cos(angle)*100;
-      const y = 125 + Math.sin(angle)*100;
-      ctx.beginPath();
-      ctx.arc(x,y,10,0,Math.PI*2);
-      ctx.fill();
-    });
+    // Fetch total supply
+    const supplyInfo = await connection.getTokenSupply(mintAddress);
+    document.getElementById("tsukiPrice").innerText = `Supply: ${supplyInfo.value.uiAmountString} $TSUKI`;
+
+    // Fetch largest accounts for holders count
+    const accounts = await connection.getTokenLargestAccounts(mintAddress);
+    document.getElementById("tsukiVolume").innerText = `Top holders: ${accounts.value.length}`;
   }
 
   function updateHealth(change){
@@ -218,6 +223,34 @@
     else{ face.src="pio-images/pio-sing.png"; face.classList.add("pio-sing"); mood.innerText="PIO ENTERED AP MODE 🎤🔥"; }
   }
 
+  function updateLunarPanel() {
+    const matrix = Math.floor(Math.random()*99 + 1);
+    const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
+    const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
+    const currentSign = signs[Math.floor(Math.random()*signs.length)];
+    document.getElementById("lunarMatrix").innerText = matrix;
+    document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
+    document.getElementById("lunarSigns").innerText = currentSign;
+
+    const canvas = document.getElementById("lunarCircle");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = "#00ff88";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(125,125,100,0,Math.PI*2);
+    ctx.stroke();
+    ctx.fillStyle = "#00ff88";
+    numbers.forEach((n,i)=>{
+      const angle = (i/6)*Math.PI*2 - Math.PI/2;
+      const x = 125 + Math.cos(angle)*100;
+      const y = 125 + Math.sin(angle)*100;
+      ctx.beginPath();
+      ctx.arc(x,y,10,0,Math.PI*2);
+      ctx.fill();
+    });
+  }
+
   function simulateMarket(){
     const change=(Math.random()-0.45)*8;
     updatePIO(change);
@@ -226,8 +259,10 @@
   }
 
   updateAge();
+  fetchTsukiData();
   simulateMarket();
   setInterval(simulateMarket,10000);
+  setInterval(fetchTsukiData,60000); // Refresh token data every 60s
 </script>
 
 </body>
