@@ -1,50 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>PIO 🌙 Lunar $TSUKI Dashboard</title>
+<meta charset="UTF-8" />
+<title>PIO 🌙 Lunar $TSUKI Dashboard</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #0b0b1a, #000);
-      color: #e6ffe6;
-    }
-    header { padding: 20px; text-align: center; }
-    h1 { margin-bottom: 5px; }
-    .contract { font-size: 12px; opacity: 0.8; word-break: break-all; }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-    }
-    #pio-zone { margin: 20px auto; text-align: center; }
-    #pio-face { width: 180px; transition: transform 0.4s ease; }
-    #pio-mood { margin-top: 10px; font-size: 18px; opacity: 0.9; }
-    .pio-happy { transform: scale(1.05); }
-    .pio-laugh { transform: scale(1.15) rotate(2deg); }
-    .pio-sing { animation: pioBounce 0.6s infinite; }
-    @keyframes pioBounce { 0%{transform:translateY(0);}50%{transform:translateY(-12px);}100%{transform:translateY(0);} }
-    .panel { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 18px; box-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88 inset; border: 2px solid #00ff88; }
-    .health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-    .health-card, .lunar-card { background: rgba(0,255,136,0.05); border-radius: 14px; padding: 15px; text-align: center; border: 1px solid #00ff88; box-shadow: 0 0 15px #00ff88 inset; }
-    .health-title, .lunar-title { font-size: 13px; opacity: 0.7; margin-bottom: 6px; }
-    .health-value, .lunar-value { font-size: 18px; font-weight: bold; }
-    .health-good { color: #8cffc1; }
-    .health-mid { color: #a0ffb8; }
-    .health-bad { color: #ff6a6a; }
-    .buttons { margin: 20px 0; text-align: center; }
-    button { background: linear-gradient(135deg, #00ff88, #00cc66); border: none; color: #000; padding: 14px 22px; margin: 10px; border-radius: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 0 20px #00ff88; font-weight: bold; }
-    button:hover { transform: scale(1.05); box-shadow: 0 0 30px #00ff88; }
-    #moonOutput { margin-top: 15px; font-size: 18px; min-height: 40px; text-align: center; }
-    #lunar-panel { display: flex; flex-direction: column; gap: 15px; }
-    canvas { display: block; margin: auto; background: rgba(0,255,136,0.02); border-radius: 50%; }
-    footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
-  </style>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  body { margin:0; font-family: Arial, sans-serif; background: radial-gradient(circle at top, #0b0b1a, #000); color: #e6ffe6; }
+  header { padding: 20px; text-align:center; }
+  h1 { margin-bottom:5px; }
+  .contract { font-size:12px; opacity:0.8; word-break: break-all; }
+  .container { max-width:1200px; margin:auto; padding:20px; display:grid; grid-template-columns:1fr 1fr; gap:25px; }
+  #pio-zone { margin:20px auto; text-align:center; }
+  #pio-face { width:180px; transition: transform 0.4s ease; }
+  #pio-mood { margin-top:10px; font-size:18px; opacity:0.9; }
+  .pio-happy { transform: scale(1.05); }
+  .pio-laugh { transform: scale(1.15) rotate(2deg); }
+  .pio-sing { animation: pioBounce 0.6s infinite; }
+  @keyframes pioBounce { 0%{transform:translateY(0);}50%{transform:translateY(-12px);}100%{transform:translateY(0);} }
+  .panel { background: rgba(0,0,0,0.6); padding:20px; border-radius:18px; box-shadow:0 0 30px #00ff88, 0 0 60px #00ff88 inset; border:2px solid #00ff88; }
+  .health-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:15px; }
+  .health-card, .lunar-card { background: rgba(0,255,136,0.05); border-radius:14px; padding:15px; text-align:center; border:1px solid #00ff88; box-shadow:0 0 15px #00ff88 inset; }
+  .health-title, .lunar-title { font-size:13px; opacity:0.7; margin-bottom:6px; }
+  .health-value, .lunar-value { font-size:18px; font-weight:bold; }
+  .health-good { color:#8cffc1; }
+  .health-mid { color:#a0ffb8; }
+  .health-bad { color:#ff6a6a; }
+  .buttons { margin:20px 0; text-align:center; }
+  button { background: linear-gradient(135deg, #00ff88, #00cc66); border:none; color:#000; padding:14px 22px; margin:10px; border-radius:30px; font-size:16px; cursor:pointer; box-shadow:0 0 20px #00ff88; font-weight:bold; }
+  button:hover { transform: scale(1.05); box-shadow:0 0 30px #00ff88; }
+  #moonOutput { margin-top:15px; font-size:18px; min-height:40px; text-align:center; }
+  #lunar-panel { display:flex; flex-direction:column; gap:15px; }
+  canvas { display:block; margin:auto; background: rgba(0,255,136,0.02); border-radius: 50%; }
+  footer { opacity:0.5; font-size:12px; margin:20px; text-align:center; }
+</style>
 </head>
 
 <body>
@@ -67,9 +58,9 @@
     </div>
 
     <div class="panel" id="pio-chart-panel">
-      <h3 style="text-align:center;">📊 $TSUKI Live Data</h3>
-      <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading data…</div>
-      <div id="tsukiVolume" style="font-size:16px; color:#a0ffb8;">Loading candle…</div>
+      <h3 style="text-align:center;">📊 $TSUKI Live Price & Candle</h3>
+      <canvas id="candleChart" width="400" height="250"></canvas>
+      <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading price…</div>
     </div>
 
     <div class="panel" id="pio-health">
@@ -125,28 +116,28 @@
 
 <script>
 const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
+const MORALIS_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjMzODk3ZjUxLTkyZDItNGIyYS1iZTliLWMzMzc3NmYwNDYxYyIsIm9yZ2lkIjoiNjg3MTQiLCJ1c2VySWQiOiI2ODM2MiIsInR5cGVJZCI6IjNiZGY4MzA4LTI2YjAtNDgxOS05YjRhLWQyNDIzNTg2MjFjNyIsInR5cGUiOiJQUk9KRUNUIiwiaWF0IjoxNzY3OTUxNzE0LCJleHAiOjQ5MjM3MTE3MTR9._YDN2nwX_mRdJO2CzfScLny-q7KV4H0mFfs7oQrHB3U";
+const TOKEN_ADDRESS = "463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA";
 
-function updateAge() {
-  const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
-  const months = Math.floor(days / 30.44);
+// Update PIO Age
+function updateAge(){
+  const days = Math.floor((new Date() - LAUNCH_DATE)/86400000);
+  const months = Math.floor(days/30.44);
   document.getElementById("pioAge").innerText = `${months} months (${days} days)`;
 }
 
-// Lunar Treat reward
-async function rewardPIO() {
-  const output = document.getElementById("moonOutput");
-  output.innerHTML = "🌕 Sending lunar signal...";
-  try {
-    const res = await fetch("https://ampedmyc.pythonanywhere.com/reward", { method: "POST" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    let html = `PIO received <strong>${data.treats.length} 🌙 Lunar Treat(s)</strong><br>`;
+// Reward PIO
+async function rewardPIO(){
+  const output=document.getElementById("moonOutput");
+  output.innerHTML="🌕 Sending lunar signal...";
+  try{
+    const res=await fetch("https://ampedmyc.pythonanywhere.com/reward",{method:"POST"});
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    let html=`PIO received <strong>${data.treats.length} 🌙 Lunar Treat(s)</strong><br>`;
     data.treats.forEach((t,i)=>{ html += `🌙 Treat ${i+1}: Energy ${t.energy}<br>`; });
-    output.innerHTML = html;
-  } catch(err){
-    console.error(err);
-    output.innerHTML = "⚠️ Lunar Treat Engine unreachable.";
-  }
+    output.innerHTML=html;
+  }catch(err){ console.error(err); output.innerHTML="⚠️ Lunar Treat Engine unreachable.";}
 }
 
 // Health & Mood
@@ -174,44 +165,72 @@ function updatePIO(change){
 }
 
 // Lunar Panel
-function updateLunarPanel() {
-  const matrix = Math.floor(Math.random()*99 + 1);
-  const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
-  const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
+function updateLunarPanel(){
+  const matrix = Math.floor(Math.random()*99+1);
+  const numbers = Array.from({length:6},()=>Math.floor(Math.random()*30+1));
+  const signs=["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
   const currentSign = signs[Math.floor(Math.random()*signs.length)];
   document.getElementById("lunarMatrix").innerText = matrix;
   document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
   document.getElementById("lunarSigns").innerText = currentSign;
 
-  const canvas = document.getElementById("lunarCircle");
-  const ctx = canvas.getContext("2d");
+  const canvas=document.getElementById("lunarCircle");
+  const ctx=canvas.getContext("2d");
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle = "#00ff88";
-  ctx.lineWidth = 4;
+  ctx.strokeStyle="#00ff88";
+  ctx.lineWidth=4;
   ctx.beginPath();
   ctx.arc(125,125,100,0,Math.PI*2);
   ctx.stroke();
-  ctx.fillStyle = "#00ff88";
+  ctx.fillStyle="#00ff88";
   numbers.forEach((n,i)=>{
-    const angle = (i/6)*Math.PI*2 - Math.PI/2;
-    const x = 125 + Math.cos(angle)*100;
-    const y = 125 + Math.sin(angle)*100;
+    const angle=(i/6)*Math.PI*2-Math.PI/2;
+    const x=125+Math.cos(angle)*100;
+    const y=125+Math.sin(angle)*100;
     ctx.beginPath();
     ctx.arc(x,y,10,0,Math.PI*2);
     ctx.fill();
   });
 }
 
-// Candle Simulation
+// 🕯 Chart.js Candle Setup
+let candleChart = null;
 let candleData = [];
-function addCandle(price){
-  candleData.push({time:new Date(), close: price});
-  if(candleData.length>6) candleData.shift(); // keep last 6 candles (~1 hr if 10-min each)
-  const lastCandle = candleData[candleData.length-1];
-  document.getElementById("tsukiVolume").innerText = `Last Candle: $${lastCandle.close.toFixed(6)} $TSUKI`;
+async function fetchCandleData(){
+  try{
+    const res=await fetch(`https://deep-index.moralis.io/api/v2/solana/ohlcv/${TOKEN_ADDRESS}?chain=solana&timeframe=10m&limit=20`,{
+      headers: {"accept":"application/json","X-API-Key": MORALIS_KEY}
+    });
+    const data = await res.json();
+    if(!data || !Array.isArray(data)) return;
+
+    candleData = data.map(c=>({
+      x: new Date(c.timestamp),
+      o: parseFloat(c.open),
+      h: parseFloat(c.high),
+      l: parseFloat(c.low),
+      c: parseFloat(c.close)
+    }));
+
+    // Update latest price display
+    if(candleData.length) document.getElementById("tsukiPrice").innerText = `$TSUKI Price: $${candleData[candleData.length-1].c.toFixed(6)}`;
+
+    // Render Chart
+    if(!candleChart){
+      const ctx=document.getElementById("candleChart").getContext("2d");
+      candleChart = new Chart(ctx,{
+        type: 'candlestick',
+        data: {datasets:[{label:'$TSUKI',data:candleData}]},
+        options:{plugins:{legend:{display:false}},scales:{x:{type:'time',time:{unit:'minute'}},y:{beginAtZero:false}}}
+      });
+    } else {
+      candleChart.data.datasets[0].data = candleData;
+      candleChart.update();
+    }
+  } catch(err){ console.error(err); }
 }
 
-// Simulate Market
+// Simulate Market + PIO mood
 function simulateMarket(){
   const change=(Math.random()-0.45)*8;
   updatePIO(change);
@@ -219,14 +238,13 @@ function simulateMarket(){
   updateLunarPanel();
 }
 
-// INIT
 updateAge();
-fetchTsukiPrice();
+fetchCandleData();
 simulateMarket();
 
-// INTERVALS
-setInterval(fetchTsukiPrice,60000); // refresh live price every 1 min
-setInterval(simulateMarket,10000); // update PIO mood & health every 10 sec
+// 🔁 Intervals
+setInterval(fetchCandleData,10000); // update candle every 10 sec
+setInterval(simulateMarket,10000); // PIO mood/health every 10 sec
 </script>
 
 </body>
