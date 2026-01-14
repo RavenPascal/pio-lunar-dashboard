@@ -4,19 +4,14 @@
   <meta charset="UTF-8" />
   <title>PIO 🌙 Lunar $POP Dashboard</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #0b0b1a, #000);
-      color: #e6ffe6;
-    }
-    header { padding: 20px; text-align: center; }
-    h1 { margin-bottom: 5px; }
-    .contract { font-size: 12px; opacity: 0.8; word-break: break-all; }
-    .container { max-width: 1200px; margin: auto; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-    #pio-zone { margin: 20px auto; text-align: center; }
-    #pio-face { width: 180px; transition: transform 0.4s ease; }
-    #pio-mood { margin-top: 10px; font-size: 18px; opacity: 0.9; }
+    body { margin:0; font-family:Arial,sans-serif; background:radial-gradient(circle at top,#0b0b1a,#000); color:#e6ffe6; }
+    header { padding:20px; text-align:center; }
+    h1 { margin-bottom:5px; }
+    .contract { font-size:12px; opacity:0.8; word-break:break-all; }
+    .container { max-width:1200px; margin:auto; padding:20px; display:grid; grid-template-columns:1fr 1fr; gap:25px; }
+    #pio-zone { margin:20px auto; text-align:center; }
+    #pio-face { width:180px; transition: transform 0.4s ease; }
+    #pio-mood { margin-top:10px; font-size:18px; opacity:0.9; }
     .pio-happy { transform: scale(1.05); }
     .pio-laugh { transform: scale(1.15) rotate(2deg); }
     .pio-sing { animation: pioBounce 0.6s infinite; }
@@ -138,7 +133,6 @@
           lastPrice = close;
         }
       } else {
-        // shift old candles & add new
         candles.shift();
         let open = candles[candles.length-1].close;
         let close = open + (Math.random()-0.5)*0.005;
@@ -148,6 +142,7 @@
       }
 
       drawCandles();
+      updatePIOEmotion(candles[candles.length-1]);
     } catch(err){
       console.error(err);
       document.getElementById("tsukiPrice").innerText = "⚠️ Error fetching price";
@@ -190,6 +185,33 @@
     });
   }
 
+  // ---- PIO reacts to last candle ----
+  function updatePIOEmotion(candle){
+    const face = document.getElementById("pio-face");
+    const mood = document.getElementById("pio-mood");
+    face.className = "";
+    const change = candle.close - candle.open;
+
+    if(change < -0.002){ // big drop
+      face.src="pio-images/pio-sad.png";
+      mood.innerText="PIO feels sad 😿";
+    } else if(change < 0){ // small drop
+      face.src="pio-images/pio-worried.png";
+      mood.innerText="PIO is worried 😟";
+    } else if(change < 0.002){ // slight rise
+      face.src="pio-images/pio-neutral.png";
+      mood.innerText="PIO is indifferent 😐";
+    } else if(change < 0.004){ // moderate rise
+      face.src="pio-images/pio-happy.png";
+      face.classList.add("pio-happy");
+      mood.innerText="PIO is happy 😺";
+    } else { // big rise
+      face.src="pio-images/pio-sing.png";
+      face.classList.add("pio-sing");
+      mood.innerText="PIO ENTERED PARTY MODE 🎤🔥";
+    }
+  }
+
   // ---- Lunar / PIO Panels ----
   const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
   function updateAge() {
@@ -215,18 +237,6 @@
     else{ h.innerText="Under Stress 😿"; h.classList.add("health-bad"); a.innerText="Shadow Arena 🌑"; e.innerText="Bearish"; e.classList.add("health-bad"); }
   }
 
-  function updatePIO(change){
-    const face=document.getElementById("pio-face");
-    const mood=document.getElementById("pio-mood");
-    face.className="";
-    if(change<-2){ face.src="pio-images/pio-sad.png"; mood.innerText="PIO feels sad 😿"; }
-    else if(change<-0.5){ face.src="pio-images/pio-worried.png"; mood.innerText="PIO is worried 😟"; }
-    else if(change<0.5){ face.src="pio-images/pio-neutral.png"; mood.innerText="PIO is calm 🌙"; }
-    else if(change<3){ face.src="pio-images/pio-happy.png"; face.classList.add("pio-happy"); mood.innerText="PIO is happy 😺"; }
-    else if(change<7){ face.src="pio-images/pio-laugh.png"; face.classList.add("pio-laugh"); mood.innerText="PIO is laughing 😹"; }
-    else{ face.src="pio-images/pio-sing.png"; face.classList.add("pio-sing"); mood.innerText="PIO ENTERED AP MODE 🎤🔥"; }
-  }
-
   function updateLunarPanel() {
     const matrix = Math.floor(Math.random()*99 + 1);
     const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
@@ -240,14 +250,13 @@
   async function updateDashboard() {
     await fetchDexData();
     const change = (Math.random()-0.45)*8;
-    updatePIO(change);
     updateHealth(change);
     updateLunarPanel();
   }
 
   updateAge();
   updateDashboard();
-  setInterval(updateDashboard, 60000); // every 1 min for candles
+  setInterval(updateDashboard, 60000); // update every 1 min
 </script>
 
 </body>
