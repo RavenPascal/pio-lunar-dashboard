@@ -122,64 +122,57 @@
   $POP Lunar Dashboard • Live on Solana • Trust-based 🌙
 </footer>
 
-<script type="module">
-  import Moralis from "https://cdn.jsdelivr.net/npm/moralis/dist/moralis.esm.js";
-
-  const MORALIS_API_KEY = "YOUR_MORALIS_API_KEY_HERE";
+<script>
   const POP_ADDRESS = "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr";
+  let candleData = [];
 
-  await Moralis.start({ apiKey: MORALIS_API_KEY });
-
-  // ---- Fetch current price ----
-  async function fetchPopPrice() {
+  // ---- Fetch Dexscreener Data ----
+  async function fetchDexData() {
     try {
-      const response = await Moralis.SolApi.token.getTokenPrice({
-        address: POP_ADDRESS,
-        chain: "solana"
-      });
-      const price = response.raw.usdPrice;
+      // Dexscreener API URL
+      const url = `https://api.dexscreener.com/latest/dex/tokens/${POP_ADDRESS}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      // Current price
+      const price = parseFloat(data.pairs[0].priceUsd);
       document.getElementById("tsukiPrice").innerText = `$POP Price: $${price.toFixed(6)}`;
-      return price;
+
+      // Get last 10 candle closes (mocked with last 10 historical prices if available)
+      const history = data.pairs[0].priceChangeHistory || [];
+      candleData = history.slice(-10).map(p => parseFloat(p.priceUsd));
+      if (candleData.length < 10) {
+        // Fill with current price if not enough historical data
+        while (candleData.length < 10) candleData.unshift(price);
+      }
+
+      drawCandleChart();
     } catch (err) {
       console.error(err);
       document.getElementById("tsukiPrice").innerText = "⚠️ Error fetching price";
-      return null;
     }
-  }
-
-  // ---- Fetch last 10 candle closes (mock for demo) ----
-  let candleData = [];
-
-  async function fetchLast10Candles() {
-    const price = await fetchPopPrice();
-    if (price === null) return;
-
-    if (candleData.length >= 10) candleData.shift();
-    candleData.push(price);
-
-    drawCandleChart();
   }
 
   function drawCandleChart() {
     const canvas = document.getElementById("tsukiCandleChart");
     const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
     if (candleData.length === 0) return;
 
     const maxPrice = Math.max(...candleData);
     const minPrice = Math.min(...candleData);
     const padding = 20;
-    const chartHeight = canvas.height - padding * 2;
-    const chartWidth = canvas.width - padding * 2;
+    const chartHeight = canvas.height - padding*2;
+    const chartWidth = canvas.width - padding*2;
     const candleWidth = chartWidth / 10 - 5;
 
     ctx.strokeStyle = "#00ff88";
     ctx.lineWidth = 2;
 
-    candleData.forEach((price, i) => {
-      const x = padding + i * (candleWidth + 5);
-      const y = padding + chartHeight - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
+    candleData.forEach((price,i) => {
+      const x = padding + i*(candleWidth + 5);
+      const y = padding + chartHeight - ((price - minPrice)/(maxPrice - minPrice)) * chartHeight;
       ctx.beginPath();
       ctx.moveTo(x, canvas.height - padding);
       ctx.lineTo(x, y);
@@ -236,9 +229,8 @@
     document.getElementById("lunarSigns").innerText = currentSign;
   }
 
-  // ---- Main loop ----
   async function updateDashboard() {
-    await fetchLast10Candles();
+    await fetchDexData();
     const change = (Math.random()-0.45)*8;
     updatePIO(change);
     updateHealth(change);
