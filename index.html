@@ -13,14 +13,7 @@
     header { padding: 20px; text-align: center; }
     h1 { margin-bottom: 5px; }
     .contract { font-size: 12px; opacity: 0.8; word-break: break-all; }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-    }
+    .container { max-width: 1200px; margin: auto; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
     #pio-zone { margin: 20px auto; text-align: center; }
     #pio-face { width: 180px; transition: transform 0.4s ease; }
     #pio-mood { margin-top: 10px; font-size: 18px; opacity: 0.9; }
@@ -41,11 +34,10 @@
     button:hover { transform: scale(1.05); box-shadow: 0 0 30px #00ff88; }
     #moonOutput { margin-top: 15px; font-size: 18px; min-height: 40px; text-align: center; }
     #lunar-panel { display: flex; flex-direction: column; gap: 15px; }
-    canvas { display: block; margin: auto; background: rgba(0,255,136,0.02); border-radius: 50%; }
+    canvas { display: block; margin: auto; background: rgba(0,255,136,0.02); border-radius: 10px; }
     footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
   </style>
 </head>
-
 <body>
 
 <header>
@@ -68,7 +60,7 @@
     <div class="panel" id="pio-chart-panel">
       <h3 style="text-align:center;">📊 $POP Live Data</h3>
       <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading data…</div>
-      <canvas id="tsukiCandleChart" width="400" height="150"></canvas>
+      <canvas id="tsukiCandleChart" width="500" height="200"></canvas>
     </div>
 
     <div class="panel" id="pio-health">
@@ -124,61 +116,77 @@
 
 <script>
   const POP_ADDRESS = "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr";
-  let candleData = [];
+  let candles = [];
 
-  // ---- Fetch Dexscreener Data ----
+  // ---- Fetch live price from Dexscreener ----
   async function fetchDexData() {
     try {
-      // Dexscreener API URL
-      const url = `https://api.dexscreener.com/latest/dex/tokens/${POP_ADDRESS}`;
-      const res = await fetch(url);
+      const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${POP_ADDRESS}`);
       const data = await res.json();
-
-      // Current price
       const price = parseFloat(data.pairs[0].priceUsd);
       document.getElementById("tsukiPrice").innerText = `$POP Price: $${price.toFixed(6)}`;
 
-      // Get last 10 candle closes (mocked with last 10 historical prices if available)
-      const history = data.pairs[0].priceChangeHistory || [];
-      candleData = history.slice(-10).map(p => parseFloat(p.priceUsd));
-      if (candleData.length < 10) {
-        // Fill with current price if not enough historical data
-        while (candleData.length < 10) candleData.unshift(price);
+      // Generate last 10 1-minute candles (mocked for demo)
+      if(candles.length === 0){
+        let lastPrice = price;
+        for(let i=0;i<10;i++){
+          let open = lastPrice;
+          let close = open + (Math.random()-0.5)*0.005;
+          let high = Math.max(open, close) + Math.random()*0.002;
+          let low = Math.min(open, close) - Math.random()*0.002;
+          candles.push({open, high, low, close});
+          lastPrice = close;
+        }
+      } else {
+        // shift old candles & add new
+        candles.shift();
+        let open = candles[candles.length-1].close;
+        let close = open + (Math.random()-0.5)*0.005;
+        let high = Math.max(open, close) + Math.random()*0.002;
+        let low = Math.min(open, close) - Math.random()*0.002;
+        candles.push({open, high, low, close});
       }
 
-      drawCandleChart();
-    } catch (err) {
+      drawCandles();
+    } catch(err){
       console.error(err);
       document.getElementById("tsukiPrice").innerText = "⚠️ Error fetching price";
     }
   }
 
-  function drawCandleChart() {
+  function drawCandles(){
     const canvas = document.getElementById("tsukiCandleChart");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    if (candleData.length === 0) return;
+    if(candles.length === 0) return;
 
-    const maxPrice = Math.max(...candleData);
-    const minPrice = Math.min(...candleData);
     const padding = 20;
     const chartHeight = canvas.height - padding*2;
     const chartWidth = canvas.width - padding*2;
-    const candleWidth = chartWidth / 10 - 5;
+    const candleWidth = chartWidth / candles.length - 5;
+    const maxPrice = Math.max(...candles.map(c=>c.high));
+    const minPrice = Math.min(...candles.map(c=>c.low));
+    const scale = chartHeight / (maxPrice - minPrice);
 
-    ctx.strokeStyle = "#00ff88";
-    ctx.lineWidth = 2;
+    candles.forEach((c,i)=>{
+      const x = padding + i*(candleWidth+5);
+      const yOpen = padding + (maxPrice - c.open)*scale;
+      const yClose = padding + (maxPrice - c.close)*scale;
+      const yHigh = padding + (maxPrice - c.high)*scale;
+      const yLow = padding + (maxPrice - c.low)*scale;
 
-    candleData.forEach((price,i) => {
-      const x = padding + i*(candleWidth + 5);
-      const y = padding + chartHeight - ((price - minPrice)/(maxPrice - minPrice)) * chartHeight;
+      // Wick
+      ctx.strokeStyle = "#00ff88";
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(x, canvas.height - padding);
-      ctx.lineTo(x, y);
+      ctx.moveTo(x + candleWidth/2, yHigh);
+      ctx.lineTo(x + candleWidth/2, yLow);
       ctx.stroke();
-      ctx.fillStyle = "#00ff88";
-      ctx.fillRect(x - candleWidth/2, y, candleWidth, canvas.height - padding - y);
+
+      // Body
+      ctx.fillStyle = c.close >= c.open ? "#00ff88" : "#ff6a6a";
+      ctx.fillRect(x, Math.min(yOpen,yClose), candleWidth, Math.abs(yClose - yOpen));
     });
   }
 
@@ -239,7 +247,7 @@
 
   updateAge();
   updateDashboard();
-  setInterval(updateDashboard, 10000); // every 10 sec
+  setInterval(updateDashboard, 60000); // every 1 min for candles
 </script>
 
 </body>
