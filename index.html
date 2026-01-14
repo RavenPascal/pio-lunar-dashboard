@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>PIO 🌙 Lunar $TSUKI Dashboard</title>
+  <title>PIO 🌙 Lunar $POP Dashboard</title>
   <style>
     body {
       margin: 0;
@@ -49,10 +49,10 @@
 <body>
 
 <header>
-  <h1>PIO 🌙 $TSUKI Lunar Dashboard</h1>
+  <h1>PIO 🌙 $POP Lunar Dashboard</h1>
   <div class="contract">
-    $TSUKI Contract (Solana):<br>
-    463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA
+    $POP Contract (Solana):<br>
+    7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr
   </div>
 </header>
 
@@ -66,7 +66,7 @@
     </div>
 
     <div class="panel" id="pio-chart-panel">
-      <h3 style="text-align:center;">📊 $TSUKI Live Data</h3>
+      <h3 style="text-align:center;">📊 $POP Live Data</h3>
       <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading data…</div>
       <canvas id="tsukiCandleChart" width="400" height="150"></canvas>
     </div>
@@ -119,26 +119,26 @@
 </div>
 
 <footer>
-  $TSUKI Lunar Dashboard • Live on Solana • Trust-based 🌙
+  $POP Lunar Dashboard • Live on Solana • Trust-based 🌙
 </footer>
 
 <script type="module">
   import Moralis from "https://cdn.jsdelivr.net/npm/moralis/dist/moralis.esm.js";
 
   const MORALIS_API_KEY = "YOUR_MORALIS_API_KEY_HERE";
-  const TSUKI_ADDRESS = "463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA";
+  const POP_ADDRESS = "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr";
 
   await Moralis.start({ apiKey: MORALIS_API_KEY });
 
   // ---- Fetch current price ----
-  async function fetchTsukiPrice() {
+  async function fetchPopPrice() {
     try {
       const response = await Moralis.SolApi.token.getTokenPrice({
-        address: TSUKI_ADDRESS,
+        address: POP_ADDRESS,
         chain: "solana"
       });
       const price = response.raw.usdPrice;
-      document.getElementById("tsukiPrice").innerText = `$TSUKI Price: $${price.toFixed(6)}`;
+      document.getElementById("tsukiPrice").innerText = `$POP Price: $${price.toFixed(6)}`;
       return price;
     } catch (err) {
       console.error(err);
@@ -147,14 +147,13 @@
     }
   }
 
-  // ---- Fetch last 10 candle closes (mock with recent prices for demo) ----
+  // ---- Fetch last 10 candle closes (mock for demo) ----
   let candleData = [];
 
   async function fetchLast10Candles() {
-    const price = await fetchTsukiPrice();
+    const price = await fetchPopPrice();
     if (price === null) return;
 
-    // Shift old candles & add latest
     if (candleData.length >= 10) candleData.shift();
     candleData.push(price);
 
