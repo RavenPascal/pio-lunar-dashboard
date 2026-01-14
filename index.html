@@ -68,7 +68,7 @@
     <div class="panel" id="pio-chart-panel">
       <h3 style="text-align:center;">📊 $TSUKI Live Data</h3>
       <div id="tsukiPrice" style="font-size:24px; margin:10px 0; color:#00ff88;">Loading data…</div>
-      <div id="tsukiCandle" style="font-size:16px; color:#a0ffb8;">Loading candle…</div>
+      <canvas id="tsukiCandleChart" width="400" height="150"></canvas>
     </div>
 
     <div class="panel" id="pio-health">
@@ -125,12 +125,12 @@
 <script type="module">
   import Moralis from "https://cdn.jsdelivr.net/npm/moralis/dist/moralis.esm.js";
 
-  const MORALIS_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZjUxLTkyZDItNGIyYS1iZTliLWMzMzc3NmYwNDYxYyIsIm9yZ2lkIjoiNjg3MTQiLCJ1c2VySWQiOiI2ODM2MiIsInR5cGUiOiJQUk9KRUNUIiwiaWF0IjoxNzY3OTUxNzE0LCJleHAiOjQ5MjM3MTE3MTR9._YDN2nwX_mRdJO2CzfScLny-q7KV4H0mFfs7oQrHB3U";
+  const MORALIS_API_KEY = "YOUR_MORALIS_API_KEY_HERE";
   const TSUKI_ADDRESS = "463SK47VkB7uE7XenTHKiVcMtxRsfNE2X4Q9wByaURVA";
 
   await Moralis.start({ apiKey: MORALIS_API_KEY });
 
-  // ---- Fetch real $TSUKI price ----
+  // ---- Fetch current price ----
   async function fetchTsukiPrice() {
     try {
       const response = await Moralis.SolApi.token.getTokenPrice({
@@ -147,31 +147,47 @@
     }
   }
 
-  // ---- Candle Visualization ----
+  // ---- Fetch last 10 candle closes (mock with recent prices for demo) ----
   let candleData = [];
-  function updateCandle(price) {
-    if (!price) return;
-    const last = candleData.length ? candleData[candleData.length - 1].close : price;
-    const change = (Math.random() - 0.5) * 0.01; // small variation for candle
-    const close = price + change;
-    candleData.push({ time: new Date(), close });
-    if (candleData.length > 6) candleData.shift(); // keep last 6 candles (~1hr)
-    document.getElementById("tsukiCandle").innerText = `Last 10-min Candle: ${close.toFixed(6)} $TSUKI`;
 
-    // Draw candle chart on canvas
-    const canvas = document.getElementById("lunarCircle");
+  async function fetchLast10Candles() {
+    const price = await fetchTsukiPrice();
+    if (price === null) return;
+
+    // Shift old candles & add latest
+    if (candleData.length >= 10) candleData.shift();
+    candleData.push(price);
+
+    drawCandleChart();
+  }
+
+  function drawCandleChart() {
+    const canvas = document.getElementById("tsukiCandleChart");
     const ctx = canvas.getContext("2d");
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (candleData.length === 0) return;
+
+    const maxPrice = Math.max(...candleData);
+    const minPrice = Math.min(...candleData);
+    const padding = 20;
+    const chartHeight = canvas.height - padding * 2;
+    const chartWidth = canvas.width - padding * 2;
+    const candleWidth = chartWidth / 10 - 5;
+
     ctx.strokeStyle = "#00ff88";
     ctx.lineWidth = 2;
-    ctx.beginPath();
-    candleData.forEach((c,i)=>{
-      const x = i*40 + 30;
-      const y = canvas.height - c.close*100000; // scale price for visualization
-      if (i===0) ctx.moveTo(x,y);
-      else ctx.lineTo(x,y);
+
+    candleData.forEach((price, i) => {
+      const x = padding + i * (candleWidth + 5);
+      const y = padding + chartHeight - ((price - minPrice) / (maxPrice - minPrice)) * chartHeight;
+      ctx.beginPath();
+      ctx.moveTo(x, canvas.height - padding);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.fillStyle = "#00ff88";
+      ctx.fillRect(x - candleWidth/2, y, candleWidth, canvas.height - padding - y);
     });
-    ctx.stroke();
   }
 
   // ---- Lunar / PIO Panels ----
@@ -223,8 +239,7 @@
 
   // ---- Main loop ----
   async function updateDashboard() {
-    const price = await fetchTsukiPrice();
-    updateCandle(price);
+    await fetchLast10Candles();
     const change = (Math.random()-0.45)*8;
     updatePIO(change);
     updateHealth(change);
