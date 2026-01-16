@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>PIO 🌙 Lunar $POP Dashboard</title>
-<style>
-body { margin:0; font-family:Arial,sans-serif; background:radial-gradient(circle at top,#0b0b1a,#000); color:#e6ffe6; }
-header { padding:20px; text-align:center; }
-h1 { margin-bottom:5px; }
-.contract { font-size:12px; opacity:0.8; word-break:break-all; }
-.container { max-width:1200px; margin:auto; padding:20px; display:grid; grid-template-columns:1fr 1fr; gap:25px; }
-#pio-zone { margin:20px auto; text-align:center; }
-#pio-face { width:180px; transition: transform 0.4s ease; }
-#pio-mood { margin-top:10px; font-size:18px; opacity:0.9; }
-.pio-happy { transform: scale(1.05); }
-.pio-laugh { transform: scale(1.15) rotate(2deg); }
-.pio-sing { animation: pioBounce 0.6s infinite; }
-@keyframes pioBounce { 0%{transform:translateY(0);}50%{transform:translateY(-12px);}100%{transform:translateY(0);} }
-.panel { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 18px; box-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88 inset; border: 2px solid #00ff88; }
-.health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-.health-card, .lunar-card { background: rgba(0,255,136,0.05); border-radius: 14px; padding: 15px; text-align: center; border: 1px solid #00ff88; box-shadow: 0 0 15px #00ff88 inset; }
-.health-title, .lunar-title { font-size: 13px; opacity: 0.7; margin-bottom: 6px; }
-.health-value, .lunar-value { font-size: 18px; font-weight: bold; }
-.health-good { color: #8cffc1; }
-.health-mid { color: #a0ffb8; }
-.health-bad { color: #ff6a6a; }
-.buttons { margin: 20px 0; text-align: center; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-button { background: linear-gradient(135deg, #00ff88, #00cc66); border: none; color: #000; padding: 14px 22px; margin: 10px; border-radius: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 0 20px #00ff88; font-weight: bold; }
-button:hover { transform: scale(1.05); box-shadow: 0 0 30px #00ff88; }
-.neon-outline { background:transparent; color:#00ff88; border:2px solid #00ff88; box-shadow:0 0 15px #00ff88, inset 0 0 15px #00ff88; }
-.neon-outline:hover { background:rgba(0,255,136,0.1); }
-#walletBox { display:none; margin-top:15px; padding:15px; border-radius:14px; border:1px solid #00ff88; box-shadow: inset 0 0 15px #00ff88; background: rgba(0,255,136,0.05); }
-#moonOutput { margin-top: 15px; font-size: 18px; min-height: 40px; text-align: center; }
-#lunar-panel { display: flex; flex-direction: column; gap: 15px; }
-canvas { display: block; margin: auto; background: rgba(0,255,136,0.02); border-radius: 10px; }
-footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
-</style>
+  <meta charset="UTF-8" />
+  <title>PIO 🌙 Lunar $POP Dashboard</title>
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:radial-gradient(circle at top,#0b0b1a,#000); color:#e6ffe6; }
+    header { padding:20px; text-align:center; }
+    h1 { margin-bottom:5px; }
+    .contract { font-size:12px; opacity:0.8; word-break:break-all; }
+    .container { max-width:1200px; margin:auto; padding:20px; display:grid; grid-template-columns:1fr 1fr; gap:25px; }
+    #pio-zone { margin:20px auto; text-align:center; }
+    #pio-face { width:180px; transition: transform 0.4s ease; }
+    #pio-mood { margin-top:10px; font-size:18px; opacity:0.9; }
+    .pio-happy { transform: scale(1.05); }
+    .pio-laugh { transform: scale(1.15) rotate(2deg); }
+    .pio-sing { animation: pioBounce 0.6s infinite; }
+    @keyframes pioBounce { 0%{transform:translateY(0);}50%{transform:translateY(-12px);}100%{transform:translateY(0);} }
+    .panel { background: rgba(0,0,0,0.6); padding: 20px; border-radius: 18px; box-shadow: 0 0 30px #00ff88, 0 0 60px #00ff88 inset; border: 2px solid #00ff88; }
+    .health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+    .health-card, .lunar-card { background: rgba(0,255,136,0.05); border-radius: 14px; padding: 15px; text-align: center; border: 1px solid #00ff88; box-shadow: 0 0 15px #00ff88 inset; }
+    .health-title, .lunar-title { font-size: 13px; opacity: 0.7; margin-bottom: 6px; }
+    .health-value, .lunar-value { font-size: 18px; font-weight: bold; }
+    .health-good { color: #8cffc1; }
+    .health-mid { color: #a0ffb8; }
+    .health-bad { color: #ff6a6a; }
+    .buttons { margin: 20px 0; text-align: center; display:flex; justify-content:center; gap:15px; }
+    button { background: linear-gradient(135deg, #00ff88, #00cc66); border: none; color: #000; padding: 14px 22px; margin: 10px; border-radius: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 0 20px #00ff88; font-weight: bold; }
+    .btn-neon { background: transparent; border: 2px solid #00ff88; color: #00ff88; box-shadow: 0 0 15px #00ff88; }
+    button:hover { transform: scale(1.05); box-shadow: 0 0 30px #00ff88; }
+    #moonOutput { margin-top: 15px; font-size: 18px; min-height: 40px; text-align: center; }
+    #lunar-panel { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+    canvas { display: block; margin: auto; background: rgba(0,255,136,0.02); border-radius: 10px; }
+    footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
+  </style>
 </head>
 <body>
 
@@ -84,15 +82,18 @@ footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
 
     <div class="buttons">
       <button onclick="rewardPIO()">🌙 Reward PIO</button>
-      <!-- 🔹 NEW BUTTON -->
-      <button class="neon-outline" onclick="connectWallet()">Watch PIO Grow</button>
+      <button class="btn-neon" onclick="watchPIOGrow()">👀 Watch PIO Grow</button>
     </div>
 
     <div id="moonOutput">🌙 Awaiting lunar action...</div>
   </div>
 
-  <!-- RIGHT COLUMN: Lunar Consultation -->
+  <!-- RIGHT COLUMN: Lunar Consultation + Hex Diagram -->
   <div class="panel" id="lunar-panel">
+    <div class="lunar-card">
+      <div class="lunar-title">📊 PIO Parameters Radar</div>
+      <canvas id="pioRadar" width="300" height="300"></canvas>
+    </div>
     <div class="lunar-card">
       <div class="lunar-title">🌕 Lunar Matrix</div>
       <div id="lunarMatrix" class="lunar-value">Loading...</div>
@@ -105,16 +106,6 @@ footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
       <div class="lunar-title">♈ Lunar Signs</div>
       <div id="lunarSigns" class="lunar-value">Loading...</div>
     </div>
-    <canvas id="lunarCircle" width="250" height="250"></canvas>
-
-    <!-- 🔹 NEW WALLET BOX -->
-    <div id="walletBox">
-      <div><strong>Address:</strong></div>
-      <div id="walletAddress"></div>
-      <br>
-      <div><strong>SOL Balance:</strong></div>
-      <div id="walletSol"></div>
-    </div>
   </div>
 
 </div>
@@ -124,156 +115,174 @@ footer { opacity: 0.5; font-size: 12px; margin: 20px; text-align: center; }
 </footer>
 
 <script>
-const POP_ADDRESS = "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr";
-let candles = [];
+  const POP_ADDRESS = "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr";
+  let candles = [];
+  let pioRewards = 0;
+  let pioValue = 0;
 
-// ---- Dexscreener Price + Candles ----
-async function fetchDexData() {
-  try {
-    const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${POP_ADDRESS}`);
-    const data = await res.json();
-    const price = parseFloat(data.pairs[0].priceUsd);
-    document.getElementById("tsukiPrice").innerText = `$POP Price: $${price.toFixed(6)}`;
+  async function fetchDexData() {
+    try {
+      const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${POP_ADDRESS}`);
+      const data = await res.json();
+      pioValue = parseFloat(data.pairs[0].priceUsd);
+      document.getElementById("tsukiPrice").innerText = `$POP Price: $${pioValue.toFixed(6)}`;
 
-    if(candles.length === 0){
-      let lastPrice = price;
-      for(let i=0;i<10;i++){
-        let open = lastPrice;
+      if(candles.length === 0){
+        let lastPrice = pioValue;
+        for(let i=0;i<10;i++){
+          let open = lastPrice;
+          let close = open + (Math.random()-0.5)*0.005;
+          let high = Math.max(open, close) + Math.random()*0.002;
+          let low = Math.min(open, close) - Math.random()*0.002;
+          candles.push({open, high, low, close});
+          lastPrice = close;
+        }
+      } else {
+        candles.shift();
+        let open = candles[candles.length-1].close;
         let close = open + (Math.random()-0.5)*0.005;
         let high = Math.max(open, close) + Math.random()*0.002;
         let low = Math.min(open, close) - Math.random()*0.002;
         candles.push({open, high, low, close});
-        lastPrice = close;
       }
-    } else {
-      candles.shift();
-      let open = candles[candles.length-1].close;
-      let close = open + (Math.random()-0.5)*0.005;
-      let high = Math.max(open, close) + Math.random()*0.002;
-      let low = Math.min(open, close) - Math.random()*0.002;
-      candles.push({open, high, low, close});
+
+      drawCandles();
+      updatePIOEmotion(candles[candles.length-1]);
+      drawRadar();
+    } catch(err){
+      console.error(err);
+      document.getElementById("tsukiPrice").innerText = "⚠️ Error fetching price";
     }
-
-    drawCandles();
-    updatePIOEmotion(candles[candles.length-1]);
-  } catch(err){
-    console.error(err);
-    document.getElementById("tsukiPrice").innerText = "⚠️ Error fetching price";
   }
-}
 
-// Candlestick chart drawing
-function drawCandles(){
-  const canvas = document.getElementById("tsukiCandleChart");
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  function drawCandles(){
+    const canvas = document.getElementById("tsukiCandleChart");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(candles.length === 0) return;
+    const padding = 20;
+    const chartHeight = canvas.height - padding*2;
+    const chartWidth = canvas.width - padding*2;
+    const candleWidth = chartWidth / candles.length - 5;
+    const maxPrice = Math.max(...candles.map(c=>c.high));
+    const minPrice = Math.min(...candles.map(c=>c.low));
+    const scale = chartHeight / (maxPrice - minPrice);
 
-  if(candles.length === 0) return;
+    candles.forEach((c,i)=>{
+      const x = padding + i*(candleWidth+5);
+      const yOpen = padding + (maxPrice - c.open)*scale;
+      const yClose = padding + (maxPrice - c.close)*scale;
+      const yHigh = padding + (maxPrice - c.high)*scale;
+      const yLow = padding + (maxPrice - c.low)*scale;
+      ctx.strokeStyle = "#00ff88";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x + candleWidth/2, yHigh);
+      ctx.lineTo(x + candleWidth/2, yLow);
+      ctx.stroke();
+      ctx.fillStyle = c.close >= c.open ? "#00ff88" : "#ff6a6a";
+      ctx.fillRect(x, Math.min(yOpen,yClose), candleWidth, Math.abs(yClose - yOpen));
+    });
+  }
 
-  const padding = 20;
-  const chartHeight = canvas.height - padding*2;
-  const chartWidth = canvas.width - padding*2;
-  const candleWidth = chartWidth / candles.length - 5;
-  const maxPrice = Math.max(...candles.map(c=>c.high));
-  const minPrice = Math.min(...candles.map(c=>c.low));
-  const scale = chartHeight / (maxPrice - minPrice);
+  function updatePIOEmotion(candle){
+    const face = document.getElementById("pio-face");
+    const mood = document.getElementById("pio-mood");
+    face.className = "";
+    const change = candle.close - candle.open;
+    if(change < -0.002){ face.src="pio-images/pio-sad.png"; mood.innerText="PIO feels sad 😿"; }
+    else if(change < 0){ face.src="pio-images/pio-worried.png"; mood.innerText="PIO is worried 😟"; }
+    else if(change < 0.002){ face.src="pio-images/pio-neutral.png"; mood.innerText="PIO is indifferent 😐"; }
+    else if(change < 0.004){ face.src="pio-images/pio-happy.png"; face.classList.add("pio-happy"); mood.innerText="PIO is happy 😺"; }
+    else { face.src="pio-images/pio-sing.png"; face.classList.add("pio-sing"); mood.innerText="PIO ENTERED PARTY MODE 🎤🔥"; }
+  }
 
-  candles.forEach((c,i)=>{
-    const x = padding + i*(candleWidth+5);
-    const yOpen = padding + (maxPrice - c.open)*scale;
-    const yClose = padding + (maxPrice - c.close)*scale;
-    const yHigh = padding + (maxPrice - c.high)*scale;
-    const yLow = padding + (maxPrice - c.low)*scale;
+  const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
+  function updateAge() {
+    const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
+    const months = Math.floor(days / 30.44);
+    document.getElementById("pioAge").innerText = `${months} months (${days} days)`;
+  }
 
+  async function rewardPIO() {
+    const output = document.getElementById("moonOutput");
+    pioRewards++;
+    output.innerHTML = `PIO received 🌙 Lunar Treats! Total: ${pioRewards}`;
+    drawRadar();
+  }
+
+  function watchPIOGrow(){
+    alert("Wallet connect feature coming soon! 👀");
+  }
+
+  function updateHealth(change){
+    const h=document.getElementById("pioHealth");
+    const a=document.getElementById("pioArena");
+    const e=document.getElementById("pioEnv");
+    h.className="health-value"; e.className="health-value";
+    if(change>3){ h.innerText="Thriving 🚀"; h.classList.add("health-good"); a.innerText="Moon Arena 🌕"; e.innerText="Bullish"; e.classList.add("health-good"); }
+    else if(change>0.5){ h.innerText="Healthy 😺"; h.classList.add("health-good"); a.innerText="Memecoin Season 🌈"; e.innerText="Optimistic"; e.classList.add("health-mid"); }
+    else if(change>-1){ h.innerText="Stable 🌙"; h.classList.add("health-mid"); a.innerText="Neutral Zone 🌗"; e.innerText="Uncertain"; e.classList.add("health-mid"); }
+    else{ h.innerText="Under Stress 😿"; h.classList.add("health-bad"); a.innerText="Shadow Arena 🌑"; e.innerText="Bearish"; e.classList.add("health-bad"); }
+  }
+
+  function updateLunarPanel() {
+    const matrix = Math.floor(Math.random()*99 + 1);
+    const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
+    const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
+    const currentSign = signs[Math.floor(Math.random()*signs.length)];
+    document.getElementById("lunarMatrix").innerText = matrix;
+    document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
+    document.getElementById("lunarSigns").innerText = currentSign;
+  }
+
+  function drawRadar(){
+    const canvas = document.getElementById("pioRadar");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const cx = canvas.width/2;
+    const cy = canvas.height/2;
+    const radius = 100;
+
+    // Gather metrics (normalized 0-1)
+    const hText = document.getElementById("pioHealth").innerText.includes("Thriving")?1:document.getElementById("pioHealth").innerText.includes("Healthy")?0.8:0.5;
+    const aText = document.getElementById("pioArena").innerText.includes("Moon")?1:0.5;
+    const eText = document.getElementById("pioEnv").innerText.includes("Bullish")?1:0.5;
+    const ageText = parseInt(document.getElementById("pioAge").innerText) || 12;
+    const ageNorm = Math.min(ageText/24,1);
+    const valueNorm = Math.min(pioValue/1,1);
+    const rewardsNorm = Math.min(pioRewards/10,1);
+
+    const points = [hText,aText,eText,ageNorm,valueNorm,rewardsNorm];
     ctx.strokeStyle = "#00ff88";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(x + candleWidth/2, yHigh);
-    ctx.lineTo(x + candleWidth/2, yLow);
+    for(let i=0;i<6;i++){
+      const angle = (Math.PI*2/6)*i - Math.PI/2;
+      const r = radius*points[i];
+      const x = cx + r*Math.cos(angle);
+      const y = cy + r*Math.sin(angle);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      // draw small circle at vertex
+      ctx.fillStyle="#00ff88";
+      ctx.beginPath();
+      ctx.arc(x,y,4,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.closePath();
     ctx.stroke();
+  }
 
-    ctx.fillStyle = c.close >= c.open ? "#00ff88" : "#ff6a6a";
-    ctx.fillRect(x, Math.min(yOpen,yClose), candleWidth, Math.abs(yClose - yOpen));
-  });
-}
+  async function updateDashboard() {
+    await fetchDexData();
+    const change = (Math.random()-0.45)*8;
+    updateHealth(change);
+    updateLunarPanel();
+  }
 
-// PIO emotion
-function updatePIOEmotion(candle){
-  const face = document.getElementById("pio-face");
-  const mood = document.getElementById("pio-mood");
-  face.className = "";
-  const change = candle.close - candle.open;
-
-  if(change < -0.002){ face.src="pio-images/pio-sad.png"; mood.innerText="PIO feels sad 😿"; }
-  else if(change < 0){ face.src="pio-images/pio-worried.png"; mood.innerText="PIO is worried 😟"; }
-  else if(change < 0.002){ face.src="pio-images/pio-neutral.png"; mood.innerText="PIO is indifferent 😐"; }
-  else if(change < 0.004){ face.src="pio-images/pio-happy.png"; face.classList.add("pio-happy"); mood.innerText="PIO is happy 😺"; }
-  else{ face.src="pio-images/pio-sing.png"; face.classList.add("pio-sing"); mood.innerText="PIO ENTERED PARTY MODE 🎤🔥"; }
-}
-
-// Lunar / PIO panels
-const LAUNCH_DATE = new Date("2024-05-11T00:00:00Z");
-function updateAge() {
-  const days = Math.floor((new Date() - LAUNCH_DATE) / 86400000);
-  const months = Math.floor(days / 30.44);
-  document.getElementById("pioAge").innerText = `${months} months (${days} days)`;
-}
-function rewardPIO() {
-  const output = document.getElementById("moonOutput");
-  output.innerHTML = "🌕 Sending lunar signal...";
-  setTimeout(()=>{ output.innerHTML = "PIO received 🌙 Lunar Treats!"; }, 1500);
-}
-function updateHealth(change){
-  const h=document.getElementById("pioHealth");
-  const a=document.getElementById("pioArena");
-  const e=document.getElementById("pioEnv");
-  h.className="health-value"; e.className="health-value";
-  if(change>3){ h.innerText="Thriving 🚀"; h.classList.add("health-good"); a.innerText="Moon Arena 🌕"; e.innerText="Bullish"; e.classList.add("health-good"); }
-  else if(change>0.5){ h.innerText="Healthy 😺"; h.classList.add("health-good"); a.innerText="Memecoin Season 🌈"; e.innerText="Optimistic"; e.classList.add("health-mid"); }
-  else if(change>-1){ h.innerText="Stable 🌙"; h.classList.add("health-mid"); a.innerText="Neutral Zone 🌗"; e.innerText="Uncertain"; e.classList.add("health-mid"); }
-  else{ h.innerText="Under Stress 😿"; h.classList.add("health-bad"); a.innerText="Shadow Arena 🌑"; e.innerText="Bearish"; e.classList.add("health-bad"); }
-}
-function updateLunarPanel() {
-  const matrix = Math.floor(Math.random()*99 + 1);
-  const numbers = Array.from({length:6}, () => Math.floor(Math.random()*30+1));
-  const signs = ["🌑 New Moon","🌓 First Quarter","🌕 Full Moon","🌗 Last Quarter"];
-  const currentSign = signs[Math.floor(Math.random()*signs.length)];
-  document.getElementById("lunarMatrix").innerText = matrix;
-  document.getElementById("lunarNumbers").innerText = numbers.join(" - ");
-  document.getElementById("lunarSigns").innerText = currentSign;
-}
-async function updateDashboard() {
-  await fetchDexData();
-  const change = (Math.random()-0.45)*8;
-  updateHealth(change);
-  updateLunarPanel();
-}
-updateAge();
-updateDashboard();
-setInterval(updateDashboard, 60000);
-
-// ---- PHANTOM WALLET ----
-async function connectWallet() {
-  if (!window.solana || !window.solana.isPhantom) { alert("Phantom Wallet not found"); return; }
-  try {
-    const resp = await window.solana.connect();
-    const address = resp.publicKey.toString();
-    document.getElementById("walletAddress").innerText = address;
-    document.getElementById("walletBox").style.display="block";
-    document.getElementById("moonOutput").innerText="🌙 Wallet connected!";
-    fetchSolBalance(address);
-  } catch(err){ console.error(err); }
-}
-async function fetchSolBalance(address){
-  const res = await fetch("https://api.mainnet-beta.solana.com", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({ jsonrpc:"2.0", id:1, method:"getBalance", params:[address] })
-  });
-  const data = await res.json();
-  const sol = data.result.value/1e9;
-  document.getElementById("walletSol").innerText=sol.toFixed(4)+" SOL";
-}
+  updateAge();
+  updateDashboard();
+  setInterval(updateDashboard, 60000);
 </script>
 
 </body>
